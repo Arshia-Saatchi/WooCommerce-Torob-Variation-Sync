@@ -1,0 +1,14 @@
+# Release artifacts are published through GitHub Releases, not committed.
+*.zip
+.release-staging/
+
+# Local development dependencies and test artifacts.
+vendor/
+node_modules/
+.phpunit.result.cache
+
+# Runtime/editor files.
+logs/*.log
+.DS_Store
+Thumbs.db
+*.swp
