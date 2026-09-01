@@ -8,6 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $enabled             = (string) ( $settings['enabled'] ?? 'yes' );
+$v3_enabled          = (string) ( $settings['v3_enabled'] ?? 'yes' );
 $title_format        = (string) ( $settings['title_format'] ?? 'parent_attributes' );
 $title_attributes    = (array) ( $settings['title_attributes'] ?? array() );
 $export_attributes   = (array) ( $settings['export_attributes'] ?? array() );
@@ -35,9 +36,18 @@ $notice              = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) );
 
 	<div class="tves-status-grid">
 		<div class="tves-card">
-			<strong><?php esc_html_e( 'Feed endpoint', 'torob-variable-exporter' ); ?></strong>
+			<strong><?php esc_html_e( 'Official Torob Product API v3', 'torob-variable-exporter' ); ?></strong>
+			<code><?php echo esc_html( $v3_feed_url ); ?></code>
+			<p><?php esc_html_e( 'Catalog:', 'torob-variable-exporter' ); ?> <strong id="tves-v3-catalog-status"><?php echo $v3_stats['ready'] ? esc_html( sprintf( /* translators: %d: item count. */ __( 'ready — %d items', 'torob-variable-exporter' ), $v3_stats['total'] ) ) : esc_html__( 'not generated yet', 'torob-variable-exporter' ); ?></strong></p>
+			<p><?php esc_html_e( 'JWT audience:', 'torob-variable-exporter' ); ?> <code><?php echo esc_html( $v3_audience ); ?></code></p>
+			<p><?php esc_html_e( 'JWT verification:', 'torob-variable-exporter' ); ?> <strong><?php echo $v3_crypto_ready ? esc_html__( 'ready (PHP Sodium)', 'torob-variable-exporter' ) : esc_html__( 'PHP Sodium is missing', 'torob-variable-exporter' ); ?></strong></p>
+			<p><?php esc_html_e( 'Last authenticated Torob request:', 'torob-variable-exporter' ); ?> <strong id="tves-v3-last-access"><?php echo $v3_last_access ? esc_html( wp_date( 'Y-m-d H:i:s', $v3_last_access ) ) : esc_html__( 'Never', 'torob-variable-exporter' ); ?></strong></p>
+			<p class="description"><?php esc_html_e( 'Give this POST endpoint to Torob support. Torob supplies and signs the JWT token; do not create a static token for v3.', 'torob-variable-exporter' ); ?></p>
+		</div>
+		<div class="tves-card">
+			<strong><?php esc_html_e( 'Legacy GET feed', 'torob-variable-exporter' ); ?></strong>
 			<code><?php echo esc_html( $feed_url ); ?></code>
-			<p class="description"><?php esc_html_e( 'Use ?page=1&per_page=25 for pagination. The maximum page size is 100 source products.', 'torob-variable-exporter' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Kept for backward compatibility. Do not submit this URL as the official Torob v3 endpoint.', 'torob-variable-exporter' ); ?></p>
 		</div>
 		<div class="tves-card" id="tves-sync-card" data-running="<?php echo $status['running'] ? '1' : '0'; ?>">
 			<strong><?php esc_html_e( 'Synchronization', 'torob-variable-exporter' ); ?></strong>
@@ -61,6 +71,10 @@ $notice              = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) );
 			<p><?php esc_html_e( 'Choose which variation data appears in the feed and how product titles are generated.', 'torob-variable-exporter' ); ?></p>
 		</div>
 		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Official API v3', 'torob-variable-exporter' ); ?></th>
+				<td><label><input type="checkbox" name="tves_settings[v3_enabled]" value="1" <?php checked( 'yes', $v3_enabled ); ?>> <?php esc_html_e( 'Enable the JWT-protected Torob Product API v3 endpoint', 'torob-variable-exporter' ); ?></label></td>
+			</tr>
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Variation export', 'torob-variable-exporter' ); ?></th>
 				<td><label><input type="checkbox" name="tves_settings[enabled]" value="1" <?php checked( 'yes', $enabled ); ?>> <?php esc_html_e( 'Export each variable product variation as an independent item', 'torob-variable-exporter' ); ?></label></td>
@@ -108,8 +122,8 @@ $notice              = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) );
 				</select></td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="tves-api-token"><?php esc_html_e( 'Optional API token', 'torob-variable-exporter' ); ?></label></th>
-				<td><input type="password" autocomplete="new-password" class="regular-text" id="tves-api-token" name="tves_settings[api_token]" value="<?php echo esc_attr( $settings['api_token'] ?? '' ); ?>"><p class="description"><?php esc_html_e( 'Leave empty for a public feed. When set, clients must send it in the X-Torob-Token header.', 'torob-variable-exporter' ); ?></p></td>
+				<th scope="row"><label for="tves-api-token"><?php esc_html_e( 'Legacy feed token', 'torob-variable-exporter' ); ?></label></th>
+				<td><input type="password" autocomplete="new-password" class="regular-text" id="tves-api-token" name="tves_settings[api_token]" value="<?php echo esc_attr( $settings['api_token'] ?? '' ); ?>"><p class="description"><?php esc_html_e( 'Optional static token for the legacy GET feed only. It is not used by the official v3 endpoint.', 'torob-variable-exporter' ); ?></p></td>
 			</tr>
 		</table>
 		</section>

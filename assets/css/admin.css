@@ -29,7 +29,7 @@
 .tves-header-actions { align-items: center; display: flex; flex: 0 0 auto; gap: 10px; }
 .tves-version-badge { background: #e7efff; border: 1px solid #c8d8ff; border-radius: 999px; color: #1e40af; direction: ltr; font-size: 12px; font-weight: 700; padding: 5px 10px; }
 
-.tves-status-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 18px 0; }
+.tves-status-grid { display: grid; gap: 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 18px 0; }
 .tves-card { background: var(--tves-surface); border: 1px solid var(--tves-border); border-inline-start: 4px solid var(--tves-blue); border-radius: 8px; box-shadow: 0 1px 2px rgba(16, 24, 40, .04); min-width: 0; padding: 18px 20px; }
 .tves-card > strong:first-child { color: #172033; display: block; font-size: 14px; margin-bottom: 10px; }
 .tves-card code { background: var(--tves-soft); border: 1px solid #e8ebef; border-radius: 5px; direction: ltr; display: block; margin-top: 10px; overflow-wrap: anywhere; padding: 9px 11px; text-align: left; }
@@ -121,6 +121,7 @@
 }
 
 @media (max-width: 1100px) {
+	.tves-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.tves-log-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 

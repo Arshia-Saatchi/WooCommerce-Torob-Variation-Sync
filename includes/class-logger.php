@@ -35,7 +35,6 @@ class TVES_Logger {
 		) {$charset_collate};";
 
 		dbDelta( $sql );
-		update_option( 'tves_db_version', TVES_VERSION, false );
 	}
 
 	/**

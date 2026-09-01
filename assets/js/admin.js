@@ -33,15 +33,13 @@
 			$( '#tves-exported-count' ).text( data.exported_items );
 			$( '.tves-progress' ).attr( 'aria-valuenow', data.percent );
 			$( '#tves-progress-bar' ).css( 'width', data.percent + '%' );
+			$( '#tves-v3-catalog-status' ).text( data.v3_catalog );
+			$( '#tves-v3-last-access' ).text( data.v3_last_access );
 
-			if ( data.running ) {
-				window.setTimeout( pollSyncStatus, Number( tvesAdmin.pollInterval ) || 3000 );
-			}
+			window.setTimeout( pollSyncStatus, data.running ? ( Number( tvesAdmin.pollInterval ) || 3000 ) : 30000 );
 		} ).fail( function () {
 			$( '#tves-progress-label' ).text( tvesAdmin.progressError );
-			if ( '1' === $card.attr( 'data-running' ) ) {
-				window.setTimeout( pollSyncStatus, 10000 );
-			}
+			window.setTimeout( pollSyncStatus, 30000 );
 		} );
 	}
 
@@ -155,7 +153,7 @@
 			return window.confirm( tvesAdmin.confirmSync );
 		} );
 
-		if ( '1' === $( '#tves-sync-card' ).attr( 'data-running' ) ) {
+		if ( $( '#tves-sync-card' ).length ) {
 			pollSyncStatus();
 		}
 

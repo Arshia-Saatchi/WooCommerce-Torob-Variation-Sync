@@ -150,6 +150,7 @@ class TVES_Admin_Settings {
 			'excluded_variations'  => array_values( array_filter( array_unique( array_map( 'absint', (array) ( $input['excluded_variations'] ?? array() ) ) ) ) ),
 			'excluded_categories'  => array_values( array_filter( array_unique( array_map( 'absint', (array) ( $input['excluded_categories'] ?? array() ) ) ) ) ),
 			'api_token'            => sanitize_text_field( $input['api_token'] ?? '' ),
+			'v3_enabled'           => ! empty( $input['v3_enabled'] ) ? 'yes' : 'no',
 		);
 
 		TVES_Sync_Manager::reschedule( $output['sync_interval'] );
@@ -166,6 +167,11 @@ class TVES_Admin_Settings {
 		$attributes = self::get_detected_attributes();
 		$status     = TVES_Sync_Manager::get_status();
 		$feed_url   = rest_url( 'torob/v1/products' );
+		$v3_feed_url = rest_url( 'torob/v3/products' );
+		$v3_stats    = TVES_Torob_V3_Catalog::get_stats();
+		$v3_audience = TVES_Torob_JWT_Validator::expected_audience();
+		$v3_last_access = (int) get_option( 'tves_v3_last_access', 0 );
+		$v3_crypto_ready = function_exists( 'sodium_crypto_sign_verify_detached' );
 		$categories = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false ) );
 		include TVES_PATH . 'admin/settings-page.php';
 	}
@@ -282,6 +288,8 @@ class TVES_Admin_Settings {
 		check_ajax_referer( 'tves_sync_status', 'nonce' );
 
 		$status = TVES_Sync_Manager::get_status();
+		$v3_stats = TVES_Torob_V3_Catalog::get_stats();
+		$v3_last_access = (int) get_option( 'tves_v3_last_access', 0 );
 		wp_send_json_success(
 			array(
 				'running'        => $status['running'],
@@ -298,6 +306,10 @@ class TVES_Admin_Settings {
 					$status['processed'],
 					$status['total']
 				),
+				'v3_catalog'     => $v3_stats['ready']
+					? sprintf( /* translators: %d: item count. */ __( 'ready — %d items', 'torob-variable-exporter' ), $v3_stats['total'] )
+					: __( 'not generated yet', 'torob-variable-exporter' ),
+				'v3_last_access' => $v3_last_access ? wp_date( 'Y-m-d H:i:s', $v3_last_access ) : __( 'Never', 'torob-variable-exporter' ),
 			)
 		);
 	}

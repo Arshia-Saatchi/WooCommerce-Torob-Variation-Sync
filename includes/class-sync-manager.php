@@ -15,9 +15,13 @@ class TVES_Sync_Manager {
 	private const BATCH_SIZE = 25;
 
 	private TVES_Feed_Generator $feed_generator;
+	private ?TVES_Torob_V3_Catalog $v3_catalog;
+	private ?TVES_Torob_V3_Product_Mapper $v3_mapper;
 
-	public function __construct( TVES_Feed_Generator $feed_generator ) {
+	public function __construct( TVES_Feed_Generator $feed_generator, ?TVES_Torob_V3_Catalog $v3_catalog = null, ?TVES_Torob_V3_Product_Mapper $v3_mapper = null ) {
 		$this->feed_generator = $feed_generator;
+		$this->v3_catalog     = $v3_catalog;
+		$this->v3_mapper      = $v3_mapper;
 		add_filter( 'cron_schedules', array( __CLASS__, 'add_cron_schedules' ) );
 		add_action( self::CRON_HOOK, array( $this, 'start_sync' ) );
 		add_action( self::BATCH_HOOK, array( $this, 'process_batch' ) );
@@ -88,6 +92,7 @@ class TVES_Sync_Manager {
 			'processed'      => 0,
 			'total'          => 0,
 			'exported_items' => 0,
+			'v3_items'       => 0,
 		);
 		set_transient( self::LOCK_KEY, 1, HOUR_IN_SECONDS );
 		update_option( self::STATE_KEY, $state, false );
@@ -114,10 +119,25 @@ class TVES_Sync_Manager {
 			$total_pages = (int) ( $result['pagination']['total_pages'] ?? 1 );
 			$total        = (int) ( $result['pagination']['total_source_products'] ?? 0 );
 			$processed    = min( $total, (int) $state['page'] * (int) $state['per_page'] );
+			$v3_items     = 0;
+
+			if ( $this->v3_catalog && $this->v3_mapper ) {
+				foreach ( (array) ( $result['products'] ?? array() ) as $item ) {
+					$mapped = $this->v3_mapper->map( (array) $item );
+					if ( $mapped && $this->v3_catalog->upsert( $mapped, (string) $state['version'] ) ) {
+						++$v3_items;
+					} elseif ( ! $mapped ) {
+						TVES_Logger::log( 'warning', __( 'A synchronized item could not be mapped to the Torob API v3 schema.', 'torob-variable-exporter' ), absint( $item['parent_id'] ?? $item['id'] ?? 0 ), 'variation' === ( $item['type'] ?? '' ) ? absint( $item['id'] ?? 0 ) : 0 );
+					} else {
+						throw new RuntimeException( __( 'A Torob API v3 catalog item could not be saved to the database.', 'torob-variable-exporter' ) );
+					}
+				}
+			}
 
 			$state['total']          = $total;
 			$state['processed']      = $processed;
 			$state['exported_items'] = (int) ( $state['exported_items'] ?? 0 ) + count( (array) ( $result['products'] ?? array() ) );
+			$state['v3_items']       = (int) ( $state['v3_items'] ?? 0 ) + $v3_items;
 			update_option( self::STATE_KEY, $state, false );
 
 			if ( (int) $state['page'] < $total_pages ) {
@@ -128,6 +148,9 @@ class TVES_Sync_Manager {
 			}
 
 			TVES_Feed_Generator::activate_cache_generation( (string) $state['version'] );
+			if ( $this->v3_catalog ) {
+				$this->v3_catalog->activate_generation( (string) $state['version'] );
+			}
 			update_option( 'tves_last_sync', time(), false );
 			update_option(
 				'tves_last_sync_meta',
@@ -138,6 +161,7 @@ class TVES_Sync_Manager {
 					'total'          => $total,
 					'processed'      => $processed,
 					'exported_items' => (int) $state['exported_items'],
+					'v3_items'       => (int) $state['v3_items'],
 				),
 				false
 			);
@@ -146,6 +170,9 @@ class TVES_Sync_Manager {
 			TVES_Logger::prune();
 			TVES_Logger::log( 'success', __( 'Feed synchronization completed.', 'torob-variable-exporter' ) );
 		} catch ( Throwable $exception ) {
+			if ( $this->v3_catalog && ! empty( $state['version'] ) ) {
+				$this->v3_catalog->discard_generation( (string) $state['version'] );
+			}
 			delete_option( self::STATE_KEY );
 			delete_transient( self::LOCK_KEY );
 			TVES_Logger::log( 'error', $exception->getMessage(), 0, 0, array( 'exception' => get_class( $exception ) ) );

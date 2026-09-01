@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Torob Variable Product Exporter
  * Description: Exports WooCommerce simple products and individual variations through a Torob-ready REST feed.
- * Version:     1.2.2
+ * Version:     1.3.0
  * Author:      ARSHIA
  * Text Domain: torob-variable-exporter
  * Requires at least: 6.5
@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TVES_VERSION', '1.2.2' );
+define( 'TVES_VERSION', '1.3.0' );
 define( 'TVES_FILE', __FILE__ );
 define( 'TVES_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TVES_URL', plugin_dir_url( __FILE__ ) );
@@ -24,9 +24,13 @@ require_once TVES_PATH . 'includes/class-exclusion-manager.php';
 require_once TVES_PATH . 'includes/class-variation-handler.php';
 require_once TVES_PATH . 'includes/class-product-handler.php';
 require_once TVES_PATH . 'includes/class-feed-generator.php';
+require_once TVES_PATH . 'includes/class-torob-v3-catalog.php';
+require_once TVES_PATH . 'includes/class-torob-v3-product-mapper.php';
 require_once TVES_PATH . 'includes/class-sync-manager.php';
 require_once TVES_PATH . 'includes/class-torob-api.php';
 require_once TVES_PATH . 'includes/class-admin-settings.php';
+require_once TVES_PATH . 'includes/class-torob-jwt-validator.php';
+require_once TVES_PATH . 'includes/class-torob-v3-api.php';
 
 /**
  * Main plugin container.
@@ -73,6 +77,8 @@ final class TVES_Plugin {
 		load_plugin_textdomain( 'torob-variable-exporter', false, dirname( plugin_basename( TVES_FILE ) ) . '/languages' );
 		if ( TVES_VERSION !== (string) get_option( 'tves_db_version', '' ) ) {
 			TVES_Logger::install();
+			TVES_Torob_V3_Catalog::install();
+			update_option( 'tves_db_version', TVES_VERSION, false );
 		}
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
@@ -84,9 +90,12 @@ final class TVES_Plugin {
 		$variation_handler = new TVES_Variation_Handler();
 		$product_handler   = new TVES_Product_Handler();
 		$feed_generator    = new TVES_Feed_Generator( $product_handler, $variation_handler, $exclusions );
-		$this->sync_manager = new TVES_Sync_Manager( $feed_generator );
+		$v3_catalog        = new TVES_Torob_V3_Catalog();
+		$v3_mapper         = new TVES_Torob_V3_Product_Mapper();
+		$this->sync_manager = new TVES_Sync_Manager( $feed_generator, $v3_catalog, $v3_mapper );
 
 		new TVES_Torob_API( $feed_generator );
+		new TVES_Torob_V3_API( $v3_catalog, new TVES_Torob_JWT_Validator() );
 		new TVES_Admin_Settings( $this->sync_manager );
 
 		add_action( 'save_post_product', array( $this, 'invalidate_feed' ), 10, 3 );
@@ -117,6 +126,8 @@ final class TVES_Plugin {
  */
 function tves_activate(): void {
 	TVES_Logger::install();
+	TVES_Torob_V3_Catalog::install();
+	update_option( 'tves_db_version', TVES_VERSION, false );
 	TVES_Sync_Manager::register_schedules();
 	TVES_Sync_Manager::reschedule( (string) TVES_Admin_Settings::get_setting( 'sync_interval', 'manual' ) );
 	flush_rewrite_rules();
