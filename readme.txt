@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,11 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 1.3.2 =
+* Guaranteed a JSON object for every product spec field.
+* Changed empty specs from [] to the Torob-required empty dictionary {}.
+* Requires one complete catalog regeneration after upgrading.
 
 = 1.3.1 =
 * Added strictly scoped JWT audience support for the shop's www and non-www hosts.

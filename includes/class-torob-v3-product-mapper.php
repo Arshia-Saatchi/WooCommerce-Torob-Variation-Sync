@@ -59,6 +59,9 @@ class TVES_Torob_V3_Product_Mapper {
 		}
 
 		$output = apply_filters( 'tves_torob_v3_product', $output, $product, $parent, $item );
+		if ( is_array( $output ) && isset( $output['spec'] ) && is_array( $output['spec'] ) ) {
+			$output['spec'] = (object) $output['spec'];
+		}
 		return $this->validate( is_array( $output ) ? $output : array() ) ? $output : null;
 	}
 
@@ -89,14 +92,14 @@ class TVES_Torob_V3_Product_Mapper {
 		return array_values( array_unique( $urls ) );
 	}
 
-	private function get_spec( array $attributes, WC_Product $parent ): array {
+	private function get_spec( array $attributes, WC_Product $parent ): object {
 		$spec = array();
 		foreach ( $attributes as $slug => $value ) {
 			$label = wc_attribute_label( (string) $slug, $parent );
 			$label = $label ?: (string) $slug;
 			$spec[ $this->truncate( wp_strip_all_tags( $label ), 200 ) ] = $this->truncate( wp_strip_all_tags( (string) $value ), 500 );
 		}
-		return $spec;
+		return (object) $spec;
 	}
 
 	private function get_category( WC_Product $product ): string {
@@ -121,7 +124,7 @@ class TVES_Torob_V3_Product_Mapper {
 			&& '' !== (string) ( $product['title'] ?? '' )
 			&& isset( $product['current_price'], $product['availability'], $product['image_links'], $product['spec'], $product['date_added'], $product['date_updated'] )
 			&& is_array( $product['image_links'] )
-			&& is_array( $product['spec'] );
+			&& is_object( $product['spec'] );
 	}
 
 	private function truncate( string $value, int $length ): string {

@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.3.1<br>
+**نسخه:** 1.3.2<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -201,6 +201,12 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 1.3.2
+
+- تضمین خروجی `spec` به‌صورت JSON Object برای تمام محصولات
+- تبدیل ویژگی‌های خالی به دیکشنری خالی `{}` به‌جای آرایه `[]` مطابق بازخورد ترب
+- الزام بازسازی کاتالوگ پس از به‌روزرسانی برای جایگزینی Payloadهای قبلی
 
 #### 1.3.1
 
@@ -400,6 +406,12 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 1.3.2
+
+- Guaranteed that every product emits `spec` as a JSON object.
+- Changed empty specifications from `[]` to the Torob-required empty dictionary `{}`.
+- Documented the required catalog regeneration after upgrading existing payloads.
 
 #### 1.3.1
 
