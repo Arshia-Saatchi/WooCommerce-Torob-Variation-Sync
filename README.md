@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.3.0<br>
+**نسخه:** 1.3.1<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -27,6 +27,7 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 - فید REST صفحه‌بندی‌شده با کش Transient
 - پیاده‌سازی رسمی Torob Product API v3 با درخواست POST
 - اعتبارسنجی JWT ترب با امضای Ed25519، تاریخ اعتبار و audience
+- پذیرش امن audience دامنه اصلی در هر دو حالت `www` و بدون `www`
 - صفحات دقیقاً ۱۰۰ آیتمی و مرتب‌سازی براساس تاریخ ایجاد یا ویرایش
 - جست‌وجوی تکی/گروهی محصول با `page_url` یا `page_unique`
 - کاتالوگ دیتابیسی نسخه‌دار با فعال‌سازی اتمیک پس از Sync کامل
@@ -201,6 +202,12 @@ WooCommerce-Torob-Variation-Sync/
 
 ### تاریخچه نسخه‌ها
 
+#### 1.3.1
+
+- پذیرش محدود JWT audience برای دو Host هم‌دامنه‌ی `www` و بدون `www`
+- ادامه بررسی اجباری امضای Ed25519، `exp` و `nbf` بدون کاهش امنیت توکن
+- محدودسازی Host درخواست به همان دو دامنه و ثبت audience/Host در Context لاگ
+
 #### 1.3.0
 
 - پیاده‌سازی کامل Torob Product API v3 رسمی
@@ -261,6 +268,7 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 - Paginated REST feed with transient caching
 - Official POST-based Torob Product API v3 implementation
 - Torob JWT validation with Ed25519 signatures, time claims, and audience checks
+- Safely accepts the canonical shop audience with or without the `www` prefix
 - Exact 100-item pages with date-added and date-updated sorting
 - Product lookup by `page_url` or `page_unique`
 - Generation-based persistent catalog with atomic activation
@@ -392,6 +400,12 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 1.3.1
+
+- Added narrowly scoped JWT audience compatibility for the shop's `www` and non-`www` hosts.
+- Kept Ed25519 signature, `exp`, and `nbf` checks mandatory.
+- Restricted request hosts to the same approved pair and added audience/host log context.
 
 #### 1.3.0
 

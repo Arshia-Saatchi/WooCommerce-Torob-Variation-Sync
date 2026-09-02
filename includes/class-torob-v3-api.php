@@ -41,10 +41,21 @@ class TVES_Torob_V3_API {
 		if ( '' === $token ) {
 			return $this->auth_error( __( 'The X-Torob-Token header is required.', 'torob-variable-exporter' ) );
 		}
-		$audience   = TVES_Torob_JWT_Validator::expected_audience( $request );
-		$validation = $this->jwt->validate( $token, $audience );
+		$accepted_audiences = TVES_Torob_JWT_Validator::accepted_audiences();
+		$request_host       = TVES_Torob_JWT_Validator::request_host( $request );
+		if ( '' === $request_host || ! in_array( $request_host, $accepted_audiences, true ) ) {
+			return $this->auth_error(
+				__( 'The API request host is not an accepted host for this shop.', 'torob-variable-exporter' ),
+				401,
+				array( 'request_host' => $request_host, 'accepted_audiences' => $accepted_audiences )
+			);
+		}
+		$validation = $this->jwt->validate( $token, $accepted_audiences );
 		if ( is_wp_error( $validation ) ) {
-			return $this->auth_error( $validation->get_error_message(), 'tves_v3_sodium_missing' === $validation->get_error_code() ? 500 : 401 );
+			$context = $validation->get_error_data();
+			$context = is_array( $context ) ? $context : array();
+			$context['request_host'] = $request_host;
+			return $this->auth_error( $validation->get_error_message(), 'tves_v3_sodium_missing' === $validation->get_error_code() ? 500 : 401, $context );
 		}
 
 		$content_type = strtolower( (string) $request->get_header( 'Content-Type' ) );
@@ -86,7 +97,13 @@ class TVES_Torob_V3_API {
 			__( 'Torob Product API v3 request completed.', 'torob-variable-exporter' ),
 			0,
 			0,
-			array( 'mode' => $mode, 'page' => $page, 'returned' => count( $result['products'] ), 'audience' => $audience )
+			array(
+				'mode'         => $mode,
+				'page'         => $page,
+				'returned'     => count( $result['products'] ),
+				'request_host' => $request_host,
+				'audience'     => $validation['aud'] ?? '',
+			)
 		);
 
 		$response = new WP_REST_Response(
@@ -127,11 +144,11 @@ class TVES_Torob_V3_API {
 		return new WP_Error( 'tves_v3_invalid_body', __( 'Send exactly one supported body: page and sort, page_urls, or page_uniques.', 'torob-variable-exporter' ) );
 	}
 
-	private function auth_error( string $message, int $status = 401 ): WP_REST_Response {
+	private function auth_error( string $message, int $status = 401, array $context = array() ): WP_REST_Response {
 		$key = 'tves_v3_auth_log_' . substr( md5( $message ), 0, 12 );
 		if ( ! get_transient( $key ) ) {
 			set_transient( $key, 1, 5 * MINUTE_IN_SECONDS );
-			TVES_Logger::log( 'api_error', $message, 0, 0, array( 'endpoint' => 'torob/v3/products' ) );
+			TVES_Logger::log( 'api_error', $message, 0, 0, array_merge( array( 'endpoint' => 'torob/v3/products' ), $context ) );
 		}
 		return $this->error( $message, $status );
 	}

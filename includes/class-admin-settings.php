@@ -169,7 +169,7 @@ class TVES_Admin_Settings {
 		$feed_url   = rest_url( 'torob/v1/products' );
 		$v3_feed_url = rest_url( 'torob/v3/products' );
 		$v3_stats    = TVES_Torob_V3_Catalog::get_stats();
-		$v3_audience = TVES_Torob_JWT_Validator::expected_audience();
+		$v3_audiences = TVES_Torob_JWT_Validator::accepted_audiences();
 		$v3_last_access = (int) get_option( 'tves_v3_last_access', 0 );
 		$v3_crypto_ready = function_exists( 'sodium_crypto_sign_verify_detached' );
 		$categories = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false ) );

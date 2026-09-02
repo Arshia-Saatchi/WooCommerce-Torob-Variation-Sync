@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,7 @@ Torob Variable Product Exporter محصولات ساده و Variationهای وو�
 * کش Transient و صفحه‌بندی برای فروشگاه‌های بزرگ
 * API رسمی Torob Product API v3 با POST و پاسخ استاندارد
 * اعتبارسنجی JWT امضاشده ترب با Ed25519، exp، nbf و aud
+* پذیرش امن audience دامنه فروشگاه با www یا بدون www
 * کاتالوگ نسخه‌دار با صفحه‌های دقیقاً ۱۰۰ آیتمی
 * جست‌وجو با page_urls و page_uniques و دو مرتب‌سازی رسمی
 * نمایش آخرین درخواست معتبر ترب و ثبت آن در Torob Logs
@@ -75,6 +76,7 @@ Features:
 * Transient caching and pagination for large catalogs
 * Official POST-based Torob Product API v3
 * Ed25519 JWT validation with exp, nbf, and audience checks
+* Secure audience compatibility for the shop host with or without www
 * Exact 100-item, generation-based catalog pages
 * page_urls/page_uniques lookup modes and both official sort modes
 * Last authenticated Torob access visibility and logging
@@ -114,6 +116,11 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 1.3.1 =
+* Added strictly scoped JWT audience support for the shop's www and non-www hosts.
+* Kept signature and time checks mandatory and restricted requests to the same host pair.
+* Added received audience and request-host context to API diagnostics.
 
 = 1.3.0 =
 * Implemented the official POST-based Torob Product API v3.

@@ -39,7 +39,7 @@ $notice              = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) );
 			<strong><?php esc_html_e( 'Official Torob Product API v3', 'torob-variable-exporter' ); ?></strong>
 			<code><?php echo esc_html( $v3_feed_url ); ?></code>
 			<p><?php esc_html_e( 'Catalog:', 'torob-variable-exporter' ); ?> <strong id="tves-v3-catalog-status"><?php echo $v3_stats['ready'] ? esc_html( sprintf( /* translators: %d: item count. */ __( 'ready — %d items', 'torob-variable-exporter' ), $v3_stats['total'] ) ) : esc_html__( 'not generated yet', 'torob-variable-exporter' ); ?></strong></p>
-			<p><?php esc_html_e( 'JWT audience:', 'torob-variable-exporter' ); ?> <code><?php echo esc_html( $v3_audience ); ?></code></p>
+			<p><?php esc_html_e( 'Accepted JWT audiences:', 'torob-variable-exporter' ); ?> <code><?php echo esc_html( implode( ' / ', $v3_audiences ) ); ?></code></p>
 			<p><?php esc_html_e( 'JWT verification:', 'torob-variable-exporter' ); ?> <strong><?php echo $v3_crypto_ready ? esc_html__( 'ready (PHP Sodium)', 'torob-variable-exporter' ) : esc_html__( 'PHP Sodium is missing', 'torob-variable-exporter' ); ?></strong></p>
 			<p><?php esc_html_e( 'Last authenticated Torob request:', 'torob-variable-exporter' ); ?> <strong id="tves-v3-last-access"><?php echo $v3_last_access ? esc_html( wp_date( 'Y-m-d H:i:s', $v3_last_access ) ) : esc_html__( 'Never', 'torob-variable-exporter' ); ?></strong></p>
 			<p class="description"><?php esc_html_e( 'Give this POST endpoint to Torob support. Torob supplies and signs the JWT token; do not create a static token for v3.', 'torob-variable-exporter' ); ?></p>
