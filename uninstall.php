@@ -21,6 +21,7 @@ delete_option( 'tves_detected_attributes' );
 delete_option( 'tves_last_sync' );
 delete_option( 'tves_last_sync_meta' );
 delete_option( 'tves_sync_state' );
+delete_option( 'tves_sync_batch_lock' );
 delete_option( 'tves_v3_active_generation' );
 delete_option( 'tves_v3_last_access' );
 delete_transient( 'tves_sync_lock' );

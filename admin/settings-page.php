@@ -54,11 +54,13 @@ $notice              = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) );
 			<p><?php esc_html_e( 'Status:', 'torob-variable-exporter' ); ?> <strong id="tves-sync-status"><?php echo $status['running'] ? esc_html__( 'running', 'torob-variable-exporter' ) : esc_html__( 'idle', 'torob-variable-exporter' ); ?></strong></p>
 			<p><?php esc_html_e( 'Last sync:', 'torob-variable-exporter' ); ?> <span id="tves-last-sync"><?php echo $status['last'] ? esc_html( wp_date( 'Y-m-d H:i', $status['last'] ) ) : esc_html__( 'Never', 'torob-variable-exporter' ); ?></span></p>
 			<p><?php esc_html_e( 'Next sync:', 'torob-variable-exporter' ); ?> <span id="tves-next-sync"><?php echo $status['next'] ? esc_html( wp_date( 'Y-m-d H:i', $status['next'] ) ) : esc_html__( 'Manual only', 'torob-variable-exporter' ); ?></span></p>
+			<p><?php esc_html_e( 'Last batch activity:', 'torob-variable-exporter' ); ?> <span id="tves-last-activity"><?php echo $status['last_activity'] ? esc_html( wp_date( 'Y-m-d H:i:s', $status['last_activity'] ) ) : esc_html__( 'Never', 'torob-variable-exporter' ); ?></span></p>
 			<div class="tves-progress" role="progressbar" aria-label="<?php esc_attr_e( 'Synchronization progress', 'torob-variable-exporter' ); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr( $status['percent'] ); ?>">
 				<span id="tves-progress-bar" style="width: <?php echo esc_attr( $status['percent'] ); ?>%"></span>
 			</div>
 			<p id="tves-progress-label" aria-live="polite"><?php echo esc_html( sprintf( /* translators: 1: processed, 2: total. */ __( '%1$d of %2$d source products checked', 'torob-variable-exporter' ), $status['processed'], $status['total'] ) ); ?></p>
 			<p><?php esc_html_e( 'Exported feed items:', 'torob-variable-exporter' ); ?> <strong id="tves-exported-count"><?php echo esc_html( (string) $status['exported_items'] ); ?></strong></p>
+			<p><?php esc_html_e( 'Automatic recoveries / retries:', 'torob-variable-exporter' ); ?> <strong id="tves-recovery-count"><?php echo esc_html( (string) $status['recovery_count'] . ' / ' . (string) $status['total_retries'] ); ?></strong></p>
 		</div>
 	</div>
 

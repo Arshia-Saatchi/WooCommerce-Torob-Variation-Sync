@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,13 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 1.3.3 =
+* Added automatic stalled-sync detection and recovery.
+* Added generation-specific batches, lost WP-Cron recovery, and a crash-tolerant mutex.
+* Added three controlled retries while preserving the previous complete catalog.
+* Reduced batch size to lower timeout risk and kept API reads isolated from active builds.
+* Added live last-activity and recovery/retry counters to the synchronization status.
 
 = 1.3.2 =
 * Guaranteed a JSON object for every product spec field.

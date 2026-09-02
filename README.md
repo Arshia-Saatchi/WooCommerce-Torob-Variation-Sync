@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.3.2<br>
+**نسخه:** 1.3.3<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -201,6 +201,16 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 1.3.3
+
+- اضافه‌شدن Watchdog برای شناسایی و ادامه خودکار Sync متوقف‌شده
+- زمان‌بندی نسل‌محور Batchها و بازیابی رویداد WP-Cron گم‌شده یا عقب‌افتاده
+- قفل اختصاصی مقاوم در برابر Crash برای جلوگیری از اجرای هم‌زمان Batchها
+- تلاش مجدد خودکار خطاهای Batch تا سه مرتبه بدون فعال‌کردن کاتالوگ ناقص
+- کاهش اندازه Batch برای کم‌کردن احتمال Timeout در محصولات سنگین
+- مستقل‌ماندن پاسخ API ترب از کاتالوگ در حال بازسازی
+- نمایش زنده آخرین فعالیت Batch و تعداد بازیابی‌ها/تلاش‌های مجدد
 
 #### 1.3.2
 
@@ -406,6 +416,16 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 1.3.3
+
+- Added a watchdog that detects and automatically resumes stalled synchronizations.
+- Added generation-specific batch scheduling and recovery for lost or overdue WP-Cron events.
+- Added a crash-tolerant mutex to prevent concurrent batch execution.
+- Added up to three automatic retries without ever promoting an incomplete catalog.
+- Reduced batch size to lower timeout risk for heavy products.
+- Kept Torob API reads isolated from the catalog generation in progress.
+- Added live batch-activity and recovery/retry counters to the synchronization card.
 
 #### 1.3.2
 

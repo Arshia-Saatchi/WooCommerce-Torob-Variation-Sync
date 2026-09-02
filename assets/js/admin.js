@@ -29,8 +29,10 @@
 			$( '#tves-sync-status' ).text( data.status_label );
 			$( '#tves-last-sync' ).text( data.last_sync );
 			$( '#tves-next-sync' ).text( data.next_sync );
+			$( '#tves-last-activity' ).text( data.last_activity );
 			$( '#tves-progress-label' ).text( data.progress_label );
 			$( '#tves-exported-count' ).text( data.exported_items );
+			$( '#tves-recovery-count' ).text( data.recovery_count + ' / ' + data.total_retries );
 			$( '.tves-progress' ).attr( 'aria-valuenow', data.percent );
 			$( '#tves-progress-bar' ).css( 'width', data.percent + '%' );
 			$( '#tves-v3-catalog-status' ).text( data.v3_catalog );

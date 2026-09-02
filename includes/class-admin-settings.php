@@ -296,10 +296,13 @@ class TVES_Admin_Settings {
 				'status_label'   => $status['running'] ? __( 'running', 'torob-variable-exporter' ) : __( 'idle', 'torob-variable-exporter' ),
 				'last_sync'      => $status['last'] ? wp_date( 'Y-m-d H:i', $status['last'] ) : __( 'Never', 'torob-variable-exporter' ),
 				'next_sync'      => $status['next'] ? wp_date( 'Y-m-d H:i', $status['next'] ) : __( 'Manual only', 'torob-variable-exporter' ),
+				'last_activity'  => $status['last_activity'] ? wp_date( 'Y-m-d H:i:s', $status['last_activity'] ) : __( 'Never', 'torob-variable-exporter' ),
 				'processed'      => $status['processed'],
 				'total'          => $status['total'],
 				'exported_items' => $status['exported_items'],
 				'percent'        => $status['percent'],
+				'recovery_count' => $status['recovery_count'],
+				'total_retries'  => $status['total_retries'],
 				'progress_label' => sprintf(
 					/* translators: 1: processed source products, 2: total source products. */
 					__( '%1$d of %2$d source products checked', 'torob-variable-exporter' ),
