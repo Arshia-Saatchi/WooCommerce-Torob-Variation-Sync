@@ -198,6 +198,13 @@ class TVES_Torob_V3_Catalog {
 		foreach ( $payloads as $payload ) {
 			$item = json_decode( (string) $payload, true );
 			if ( is_array( $item ) ) {
+				// Associative decoding turns an empty JSON object into an empty PHP
+				// array. Restore the object type required by Torob before WordPress
+				// encodes the REST response, including for payloads stored by older
+				// plugin versions.
+				$item['spec'] = isset( $item['spec'] ) && is_array( $item['spec'] )
+					? (object) $item['spec']
+					: (object) array();
 				$output[] = $item;
 			}
 		}

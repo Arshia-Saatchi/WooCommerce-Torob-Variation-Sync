@@ -79,12 +79,16 @@
 .tves-refresh-logs { gap: 5px; }
 .tves-refresh-logs .dashicons { font-size: 17px; height: 17px; width: 17px; }
 .tves-refresh-logs.is-loading .dashicons { animation: tves-spin .8s linear infinite; }
+.tves-clear-logs { border-color: #dc2626 !important; color: #b91c1c !important; gap: 5px; }
+.tves-clear-logs:hover, .tves-clear-logs:focus { background: #fff1f2 !important; border-color: #b91c1c !important; color: #991b1b !important; }
+.tves-clear-logs .dashicons { font-size: 17px; height: 17px; width: 17px; }
 .tves-log-results { min-height: 180px; position: relative; scroll-margin-top: 42px; }
 .tves-loading-state { align-items: center; background: rgba(246, 248, 251, .88); border: 1px solid var(--tves-border); border-radius: 9px; display: none; flex-direction: column; gap: 10px; inset: 0; justify-content: center; min-height: 180px; position: absolute; z-index: 20; }
 .tves-loading-state .spinner { float: none; margin: 0; }
 .tves-log-results.is-loading .tves-loading-state { display: flex; }
 .tves-log-results.is-loading #tves-log-results-content { filter: grayscale(.25); opacity: .42; pointer-events: none; }
 .tves-ajax-error { background: #fff1f2; border: 1px solid #fecdd3; border-inline-start: 4px solid #dc2626; border-radius: 7px; color: #9f1239; margin-bottom: 12px; padding: 11px 13px; }
+.tves-ajax-notice { background: #f0fdf4; border: 1px solid #bbf7d0; border-inline-start: 4px solid #16a34a; border-radius: 7px; color: #166534; margin-bottom: 12px; padding: 11px 13px; }
 .tves-table-card { background: var(--tves-surface); border: 1px solid var(--tves-border); border-radius: 9px; box-shadow: 0 1px 2px rgba(16, 24, 40, .04); overflow: hidden; }
 .tves-table-scroll { overflow-x: auto; }
 .tves-log-table { border: 0; border-collapse: collapse; min-width: 920px; table-layout: fixed; }

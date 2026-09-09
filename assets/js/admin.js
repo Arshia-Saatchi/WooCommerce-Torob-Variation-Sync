@@ -90,11 +90,16 @@
 		var $results = $( '#tves-log-results' );
 		$results.toggleClass( 'is-loading', loading ).attr( 'aria-busy', loading ? 'true' : 'false' );
 		$( '#tves-refresh-logs' ).prop( 'disabled', loading ).toggleClass( 'is-loading', loading );
+		$( '#tves-clear-logs' ).prop( 'disabled', loading );
 		$( '.tves-log-filter :input' ).prop( 'disabled', loading );
 	}
 
 	function showLogError( message ) {
 		$( '#tves-log-error' ).text( message ).prop( 'hidden', false );
+	}
+
+	function showLogNotice( message ) {
+		$( '#tves-log-notice' ).text( message ).prop( 'hidden', false );
 	}
 
 	function loadLogs( status, paged, options ) {
@@ -111,6 +116,7 @@
 		}
 
 		$( '#tves-log-error' ).prop( 'hidden', true ).empty();
+		$( '#tves-log-notice' ).prop( 'hidden', true ).empty();
 		setLogLoading( true );
 		logRequest = $.ajax( {
 			url: tvesAdmin.ajaxUrl,
@@ -176,6 +182,42 @@
 		$( '#tves-refresh-logs' ).on( 'click', function () {
 			var $results = $( '#tves-log-results' );
 			loadLogs( String( $results.attr( 'data-status' ) || '' ), $results.attr( 'data-paged' ) || 1, { history: false } );
+		} );
+
+		$( '#tves-clear-logs' ).on( 'click', function () {
+			var $results = $( '#tves-log-results' );
+			var status = String( $results.attr( 'data-status' ) || '' );
+			if ( ! window.confirm( tvesAdmin.confirmClearLogs ) ) {
+				return;
+			}
+
+			$( '#tves-log-error' ).prop( 'hidden', true ).empty();
+			$( '#tves-log-notice' ).prop( 'hidden', true ).empty();
+			setLogLoading( true );
+			$.ajax( {
+				url: tvesAdmin.ajaxUrl,
+				method: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'tves_clear_logs',
+					nonce: tvesAdmin.clearLogsNonce,
+					status: status
+				}
+			} ).done( function ( response ) {
+				if ( ! response.success || ! response.data || 'undefined' === typeof response.data.html ) {
+					showLogError( tvesAdmin.clearLogsError );
+					return;
+				}
+
+				$( '#tves-log-results-content' ).html( response.data.html );
+				updateLogControls( response.data );
+				setLogHistory( response.data.status, 1 );
+				showLogNotice( response.data.message );
+			} ).fail( function () {
+				showLogError( tvesAdmin.clearLogsError );
+			} ).always( function () {
+				setLogLoading( false );
+			} );
 		} );
 
 		$( '#tves-log-results' ).on( 'click', '.tves-log-pagination a', function ( event ) {

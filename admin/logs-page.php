@@ -58,8 +58,10 @@ $summary_cards = array(
 			<?php submit_button( __( 'Download', 'torob-variable-exporter' ), 'primary', 'download_logs', false ); ?>
 		</form>
 		<button type="button" class="button tves-refresh-logs" id="tves-refresh-logs"><span class="dashicons dashicons-update" aria-hidden="true"></span><?php esc_html_e( 'Refresh', 'torob-variable-exporter' ); ?></button>
+		<button type="button" class="button tves-clear-logs" id="tves-clear-logs"><span class="dashicons dashicons-trash" aria-hidden="true"></span><?php esc_html_e( 'Clear all logs', 'torob-variable-exporter' ); ?></button>
 		<p class="tves-toolbar-help"><?php esc_html_e( 'Exports include all records matching the selected status, not only this page.', 'torob-variable-exporter' ); ?></p>
 	</div>
+	<div class="tves-ajax-notice" id="tves-log-notice" role="status" hidden></div>
 
 	<div class="tves-log-results" id="tves-log-results" data-status="<?php echo esc_attr( $status ); ?>" data-paged="<?php echo esc_attr( $page ); ?>" aria-live="polite" aria-busy="false">
 		<div class="tves-loading-state" role="status"><span class="spinner is-active" aria-hidden="true"></span><strong><?php esc_html_e( 'Loading logs…', 'torob-variable-exporter' ); ?></strong></div>

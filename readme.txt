@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.3.3
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,7 @@ Torob Variable Product Exporter محصولات ساده و Variationهای وو�
 * نمایش زنده پیشرفت همگام‌سازی
 * فیلتر، تازه‌سازی، کارت‌های آماری و صفحه‌بندی AJAX در Torob Logs
 * دانلود UTF-8 با فرمت CSV و TXT
+* پاک‌سازی کامل لاگ‌ها به‌صورت AJAX، حذف خودکار موارد قدیمی‌تر از ۳۰ روز و سقف ۲۰٬۰۰۰ رکورد
 * توکن اختیاری فید، بررسی دسترسی، Nonce، پاک‌سازی و Escape داده‌ها
 * سازگاری با HPOS و رابط RTL
 
@@ -83,6 +84,7 @@ Features:
 * Live synchronization progress
 * AJAX log filtering, refresh, summary cards, and pagination
 * UTF-8 CSV and TXT downloads
+* Confirmed AJAX log clearing, automatic 30-day cleanup, and a 20,000-record cap
 * Optional feed token, capability checks, nonces, sanitization, and escaping
 * HPOS compatibility and responsive RTL-safe administration
 
@@ -116,6 +118,17 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 1.4.0 =
+* Added a confirmed AJAX action for clearing all Torob logs.
+* Refreshes the log table, pagination, and counters immediately after cleanup.
+* Runs automatic 30-day cleanup and enforces a 20,000-record cap independently at most once per day.
+* Includes the 1.3.4 spec-object response fix for simple products and existing payloads.
+
+= 1.3.4 =
+* Fixed empty spec values being converted from JSON objects to arrays when catalog payloads were read.
+* Normalized spec as an object in every API v3 response, including previously stored payloads.
+* Fixed api_v3_invalid_product for simple products without attributes; regeneration is not required.
 
 = 1.3.3 =
 * Added automatic stalled-sync detection and recovery.

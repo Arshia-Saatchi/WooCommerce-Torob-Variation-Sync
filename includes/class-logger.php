@@ -9,6 +9,9 @@ defined( 'ABSPATH' ) || exit;
 
 class TVES_Logger {
 	public const TABLE_SUFFIX = 'tves_logs';
+	private const RETENTION_DAYS = 30;
+	private const MAX_ROWS = 20000;
+	private const PRUNE_LOCK_KEY = 'tves_log_prune_lock';
 
 	/**
 	 * Create or update the log table.
@@ -64,6 +67,8 @@ class TVES_Logger {
 			),
 			array( '%s', '%d', '%d', '%s', '%s', '%s' )
 		);
+
+		self::maybe_prune();
 	}
 
 	/**
@@ -144,6 +149,47 @@ class TVES_Logger {
 				$days
 			)
 		);
+
+		$boundary_id = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT id FROM {$table} ORDER BY id DESC LIMIT 1 OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				self::MAX_ROWS - 1
+			)
+		);
+		if ( $boundary_id > 0 ) {
+			$wpdb->query(
+				$wpdb->prepare(
+					"DELETE FROM {$table} WHERE id < %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					$boundary_id
+				)
+			);
+		}
+	}
+
+	/**
+	 * Delete every log record and return the affected-row count.
+	 *
+	 * A negative result means the database operation failed.
+	 */
+	public static function clear_all(): int {
+		global $wpdb;
+
+		$table   = self::table_name();
+		$deleted = $wpdb->query( "DELETE FROM {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		return false === $deleted ? -1 : (int) $deleted;
+	}
+
+	/**
+	 * Run age-based cleanup at most once per day, even without a completed sync.
+	 */
+	private static function maybe_prune(): void {
+		if ( get_transient( self::PRUNE_LOCK_KEY ) ) {
+			return;
+		}
+
+		set_transient( self::PRUNE_LOCK_KEY, 1, DAY_IN_SECONDS );
+		self::prune( self::RETENTION_DAYS );
 	}
 
 	/**

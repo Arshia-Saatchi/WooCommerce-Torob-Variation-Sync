@@ -24,6 +24,7 @@ class TVES_Admin_Settings {
 		add_action( 'admin_post_tves_export_logs', array( $this, 'handle_export_logs' ) );
 		add_action( 'wp_ajax_tves_sync_status', array( $this, 'ajax_sync_status' ) );
 		add_action( 'wp_ajax_tves_load_logs', array( $this, 'ajax_load_logs' ) );
+		add_action( 'wp_ajax_tves_clear_logs', array( $this, 'ajax_clear_logs' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( TVES_FILE ), array( $this, 'action_links' ) );
 	}
 
@@ -356,6 +357,46 @@ class TVES_Admin_Settings {
 	}
 
 	/**
+	 * Permanently clear the Torob log table and return a fresh AJAX view.
+	 */
+	public function ajax_clear_logs(): void {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'torob-variable-exporter' ) ), 403 );
+		}
+		check_ajax_referer( 'tves_clear_logs', 'nonce' );
+
+		$statuses = self::get_log_statuses();
+		$status   = sanitize_key( wp_unslash( $_POST['status'] ?? '' ) );
+		$status   = array_key_exists( $status, $statuses ) ? $status : '';
+		$deleted  = TVES_Logger::clear_all();
+		if ( $deleted < 0 ) {
+			wp_send_json_error( array( 'message' => __( 'Torob logs could not be cleared. Please try again.', 'torob-variable-exporter' ) ), 500 );
+		}
+
+		$page       = 1;
+		$log_result = TVES_Logger::get_logs( $page, 30, $status );
+		ob_start();
+		include TVES_PATH . 'admin/logs-results.php';
+		$html = (string) ob_get_clean();
+
+		wp_send_json_success(
+			array(
+				'html'    => $html,
+				'status'  => $status,
+				'paged'   => $page,
+				'total'   => (int) $log_result['total'],
+				'counts'  => TVES_Logger::get_status_counts(),
+				'deleted' => $deleted,
+				'message' => sprintf(
+					/* translators: %d: number of deleted log records. */
+					__( '%d Torob log entries were deleted.', 'torob-variable-exporter' ),
+					$deleted
+				),
+			)
+		);
+	}
+
+	/**
 	 * Remove line breaks and neutralize spreadsheet formulas in exported values.
 	 */
 	public static function sanitize_export_cell( $value ): string {
@@ -376,14 +417,17 @@ class TVES_Admin_Settings {
 			'tves-admin',
 			'tvesAdmin',
 			array(
-				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
-				'syncNonce'       => wp_create_nonce( 'tves_sync_status' ),
-				'logsNonce'       => wp_create_nonce( 'tves_load_logs' ),
-				'pollInterval'    => 3000,
-				'confirmSync'     => __( 'Start a complete Torob feed regeneration now?', 'torob-variable-exporter' ),
-				'progressError'   => __( 'Live progress is temporarily unavailable.', 'torob-variable-exporter' ),
-				'loadingLogs'     => __( 'Loading logs…', 'torob-variable-exporter' ),
-				'logsError'       => __( 'Logs could not be loaded. Please try again.', 'torob-variable-exporter' ),
+				'ajaxUrl'          => admin_url( 'admin-ajax.php' ),
+				'syncNonce'        => wp_create_nonce( 'tves_sync_status' ),
+				'logsNonce'        => wp_create_nonce( 'tves_load_logs' ),
+				'clearLogsNonce'   => wp_create_nonce( 'tves_clear_logs' ),
+				'pollInterval'     => 3000,
+				'confirmSync'      => __( 'Start a complete Torob feed regeneration now?', 'torob-variable-exporter' ),
+				'progressError'    => __( 'Live progress is temporarily unavailable.', 'torob-variable-exporter' ),
+				'loadingLogs'      => __( 'Loading logs…', 'torob-variable-exporter' ),
+				'logsError'        => __( 'Logs could not be loaded. Please try again.', 'torob-variable-exporter' ),
+				'clearLogsError'   => __( 'Torob logs could not be cleared. Please try again.', 'torob-variable-exporter' ),
+				'confirmClearLogs' => __( 'Permanently delete all Torob logs? Download a report first if you need a backup.', 'torob-variable-exporter' ),
 			)
 		);
 

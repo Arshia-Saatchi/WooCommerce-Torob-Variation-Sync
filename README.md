@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.3.3<br>
+**نسخه:** 1.4.0<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -36,6 +36,8 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 - نمایش زنده پیشرفت همگام‌سازی با AJAX
 - صفحه گزارش با فیلتر، تازه‌سازی و صفحه‌بندی کاملاً AJAX
 - خروجی UTF-8 با فرمت CSV و TXT
+- پاک‌کردن تمام لاگ‌ها به‌صورت امن و AJAX همراه با تأیید کاربر
+- حذف خودکار لاگ‌های قدیمی‌تر از ۳۰ روز و نگهداری حداکثر ۲۰٬۰۰۰ رکورد اخیر، مستقل از اجرای Sync
 - ثبت موفقیت‌ها، هشدارها، محصولات نامعتبر و خطاهای API
 - توکن اختیاری برای محافظت از فید
 - سازگاری با HPOS ووکامرس
@@ -133,8 +135,10 @@ X-Torob-Token-Version: 1
 - صفحه‌بندی
 - به‌روزرسانی شمارنده‌ها
 - پشتیبانی از Back و Forward مرورگر
+- پاک‌کردن تمام لاگ‌ها با تأیید کاربر و به‌روزرسانی AJAX جدول و شمارنده‌ها
 
 دانلود CSV/TXT به‌صورت دانلود عادی مرورگر انجام می‌شود، اما همیشه از آخرین فیلتر فعال AJAX استفاده می‌کند.
+لاگ‌ها در جدول اختصاصی دیتابیس ذخیره می‌شوند. موارد قدیمی‌تر از ۳۰ روز حذف می‌شوند و حداکثر ۲۰٬۰۰۰ رکورد اخیر نگهداری می‌شود؛ این نگهداری خودکار مستقل از Sync و حداکثر روزی یک‌بار اجرا می‌شود.
 
 ### توسعه و شخصی‌سازی
 
@@ -201,6 +205,19 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 1.4.0
+
+- اضافه‌شدن دکمه «پاک کردن همه لاگ‌ها» با تأیید کاربر و اجرای کاملاً AJAX
+- به‌روزرسانی لحظه‌ای جدول، صفحه‌بندی و شمارنده‌ها پس از پاک‌سازی
+- اجرای مستقل پاک‌سازی خودکار لاگ‌های قدیمی‌تر از ۳۰ روز و محدودسازی جدول به ۲۰٬۰۰۰ رکورد اخیر، حداکثر روزی یک‌بار
+- حفظ اصلاح خروجی `spec` نسخه 1.3.4 برای محصولات ساده و Payloadهای قبلی
+
+#### 1.3.4
+
+- اصلاح تبدیل ناخواسته `spec` خالی از Object (`{}`) به Array (`[]`) هنگام خواندن کاتالوگ
+- نرمال‌سازی `spec` تمام محصولات در لایه پاسخ API v3، شامل Payloadهای ذخیره‌شده با نسخه‌های قبلی
+- رفع خطای `api_v3_invalid_product` برای محصولات ساده فاقد ویژگی، بدون نیاز اجباری به بازسازی کاتالوگ
 
 #### 1.3.3
 
@@ -293,6 +310,8 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 - Live AJAX synchronization progress
 - Fully AJAX-powered log filters, refresh, counters, and pagination
 - UTF-8 CSV and TXT log exports
+- Secure AJAX log clearing with an explicit confirmation step
+- Automatic removal of logs older than 30 days with a 20,000-record cap, independent of synchronization
 - Structured success, warning, invalid-product, and API-error logging
 - Optional feed access token
 - WooCommerce HPOS compatibility declaration
@@ -375,8 +394,10 @@ The **Torob Logs** screen updates the following without a full page reload:
 - Pagination
 - Summary counters
 - Browser Back/Forward navigation
+- Confirmed AJAX clearing of all logs with immediate table and counter updates
 
 CSV/TXT files use a normal browser download while remaining synchronized with the active AJAX filter.
+Logs are stored in a dedicated database table. Entries older than 30 days are removed and only the latest 20,000 records are retained; this maintenance runs independently of synchronization at most once per day.
 
 ### Extension Hooks
 
@@ -416,6 +437,19 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 1.4.0
+
+- Added a confirmed, fully AJAX-powered “Clear all logs” action.
+- Added immediate table, pagination, and counter updates after clearing logs.
+- Made automatic 30-day cleanup and the 20,000-record cap run independently at most once per day.
+- Preserved the 1.3.4 `spec` response fix for simple products and existing payloads.
+
+#### 1.3.4
+
+- Fixed empty `spec` values being converted from an object (`{}`) to an array (`[]`) while reading the catalog.
+- Normalized every product's `spec` in the API v3 response layer, including payloads stored by earlier versions.
+- Fixed `api_v3_invalid_product` for simple products without attributes, with no mandatory catalog regeneration.
 
 #### 1.3.3
 

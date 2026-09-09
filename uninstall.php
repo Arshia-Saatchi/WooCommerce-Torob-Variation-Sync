@@ -25,6 +25,7 @@ delete_option( 'tves_sync_batch_lock' );
 delete_option( 'tves_v3_active_generation' );
 delete_option( 'tves_v3_last_access' );
 delete_transient( 'tves_sync_lock' );
+delete_transient( 'tves_log_prune_lock' );
 
 $table_name = $wpdb->prefix . 'tves_logs';
 $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.SchemaChange
