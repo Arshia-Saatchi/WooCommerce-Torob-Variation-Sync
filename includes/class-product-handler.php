@@ -18,12 +18,12 @@ class TVES_Product_Handler {
 			return null;
 		}
 
-		$price = $product->get_price();
-		if ( '' === $price ) {
+		$price     = $product->get_price();
+		$has_price = '' !== $price && null !== $price;
+		if ( ! $has_price ) {
 			if ( $write_log ) {
-				TVES_Logger::log( 'warning', __( 'Product skipped because it has no price.', 'torob-variable-exporter' ), $product->get_id() );
+				TVES_Logger::log( 'warning', __( 'Product exported as unavailable because it has no price.', 'torob-variable-exporter' ), $product->get_id() );
 			}
-			return null;
 		}
 		if ( $write_log && $product->managing_stock() && null === $product->get_stock_quantity() ) {
 			TVES_Logger::log( 'warning', __( 'Product has stock management enabled but no stock quantity.', 'torob-variable-exporter' ), $product->get_id() );
@@ -40,8 +40,8 @@ class TVES_Product_Handler {
 			'sku'             => (string) $product->get_sku(),
 			'regular_price'   => self::price_or_null( $product->get_regular_price() ),
 			'sale_price'      => self::price_or_null( $product->get_sale_price() ),
-			'price'           => (float) $price,
-			'availability'    => $product->is_in_stock() ? 'in_stock' : 'out_of_stock',
+			'price'           => $has_price ? (float) $price : 0.0,
+			'availability'    => $has_price && $product->is_in_stock() ? 'in_stock' : 'out_of_stock',
 			'stock_quantity'  => $product->managing_stock() ? $product->get_stock_quantity() : null,
 			'image'           => $image_id ? (string) wp_get_attachment_image_url( $image_id, 'full' ) : '',
 			'url'             => (string) $product->get_permalink(),

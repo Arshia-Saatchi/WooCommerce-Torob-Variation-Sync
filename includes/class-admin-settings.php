@@ -287,6 +287,7 @@ class TVES_Admin_Settings {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'torob-variable-exporter' ) ), 403 );
 		}
 		check_ajax_referer( 'tves_sync_status', 'nonce' );
+		$this->sync_manager->maybe_process_due_batch();
 
 		$status = TVES_Sync_Manager::get_status();
 		$v3_stats = TVES_Torob_V3_Catalog::get_stats();

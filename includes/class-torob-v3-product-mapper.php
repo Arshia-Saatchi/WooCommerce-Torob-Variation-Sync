@@ -22,8 +22,10 @@ class TVES_Torob_V3_Product_Mapper {
 			$parent = $product;
 		}
 
-		$available     = $product->is_purchasable() && $product->is_in_stock();
-		$current_price = $available ? $this->price_to_toman( $product->get_price() ) : 0;
+		$price         = $product->get_price();
+		$has_price     = '' !== $price && null !== $price;
+		$available     = $has_price && $product->is_purchasable() && $product->is_in_stock();
+		$current_price = $available ? $this->price_to_toman( $price ) : 0;
 		$regular_price = $this->price_to_toman( $product->get_regular_price() );
 		$date_added    = $product->get_date_created() ?: $parent->get_date_created();
 		$date_updated  = $product->get_date_modified() ?: $parent->get_date_modified() ?: $date_added;

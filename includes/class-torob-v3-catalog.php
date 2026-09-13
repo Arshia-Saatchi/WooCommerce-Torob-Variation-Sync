@@ -71,7 +71,7 @@ class TVES_Torob_V3_Catalog {
 				$sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$page_unique,
 				$page_url,
-				hash( 'sha256', $page_url ),
+				hash( 'sha256', self::normalize_url_for_lookup( $page_url ) ),
 				$product_id,
 				$parent_id,
 				sanitize_key( $generation ),
@@ -142,16 +142,24 @@ class TVES_Torob_V3_Catalog {
 		return $this->find_many( 'page_unique', array_values( $uniques ) );
 	}
 
-	/** Find products by exact canonical URLs while retaining request order. */
+	/** Find products by normalized canonical URLs while retaining request order. */
 	public function find_by_urls( array $urls ): array {
-		$hashes   = array_map( static fn( string $url ): string => hash( 'sha256', $url ), array_values( $urls ) );
+		$urls            = array_values( array_map( 'strval', $urls ) );
+		$normalized_urls = array_map( array( __CLASS__, 'normalize_url_for_lookup' ), array_values( $urls ) );
+		$hashes          = array();
+		foreach ( $urls as $index => $url ) {
+			// The raw hash keeps exact lookups compatible with existing catalogs;
+			// the normalized hash is used by newly generated catalogs.
+			$hashes[] = hash( 'sha256', (string) $url );
+			$hashes[] = hash( 'sha256', $normalized_urls[ $index ] );
+		}
 		$products = $this->find_many( 'url_hash', $hashes );
 		$by_url   = array();
 		foreach ( $products as $product ) {
-			$by_url[ (string) $product['page_url'] ] = $product;
+			$by_url[ self::normalize_url_for_lookup( (string) $product['page_url'] ) ] = $product;
 		}
 		$output = array();
-		foreach ( $urls as $url ) {
+		foreach ( $normalized_urls as $url ) {
 			if ( isset( $by_url[ $url ] ) ) {
 				$output[] = $by_url[ $url ];
 			}
@@ -209,6 +217,47 @@ class TVES_Torob_V3_Catalog {
 			}
 		}
 		return $output;
+	}
+
+	/**
+	 * Normalize harmless URL differences used by Torob single-product lookups.
+	 */
+	private static function normalize_url_for_lookup( string $url ): string {
+		$url   = trim( html_entity_decode( $url, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+		$parts = parse_url( $url );
+		if ( ! is_array( $parts ) || empty( $parts['host'] ) ) {
+			return $url;
+		}
+
+		$host = strtolower( rtrim( (string) $parts['host'], '.' ) );
+		if ( 0 === strpos( $host, 'www.' ) ) {
+			$host = substr( $host, 4 );
+		}
+		$port = isset( $parts['port'] ) ? ':' . (int) $parts['port'] : '';
+		$path = rawurldecode( (string) ( $parts['path'] ?? '/' ) );
+		$path = '/' . ltrim( (string) preg_replace( '#/+#', '/', $path ), '/' );
+		$path = '/' === $path ? '/' : rtrim( $path, '/' ) . '/';
+
+		$query = '';
+		if ( ! empty( $parts['query'] ) ) {
+			$query_args = array();
+			parse_str( (string) $parts['query'], $query_args );
+			self::sort_query_args( $query_args );
+			$query = http_build_query( $query_args, '', '&', PHP_QUERY_RFC3986 );
+		}
+
+		return $host . $port . $path . ( '' !== $query ? '?' . $query : '' );
+	}
+
+	/** Recursively sort query parameters to make their order irrelevant. */
+	private static function sort_query_args( array &$args ): void {
+		ksort( $args, SORT_STRING );
+		foreach ( $args as &$value ) {
+			if ( is_array( $value ) ) {
+				self::sort_query_args( $value );
+			}
+		}
+		unset( $value );
 	}
 
 	private static function mysql_date( string $iso_date ): string {

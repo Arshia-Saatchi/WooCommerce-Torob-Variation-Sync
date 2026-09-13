@@ -18,12 +18,12 @@ class TVES_Variation_Handler {
 			return null;
 		}
 
-		$price = $variation->get_price();
-		if ( '' === $price ) {
+		$price     = $variation->get_price();
+		$has_price = '' !== $price && null !== $price;
+		if ( ! $has_price ) {
 			if ( $write_log ) {
-				TVES_Logger::log( 'warning', __( 'Variation skipped because it has no price.', 'torob-variable-exporter' ), $parent->get_id(), $variation->get_id() );
+				TVES_Logger::log( 'warning', __( 'Variation exported as unavailable because it has no price.', 'torob-variable-exporter' ), $parent->get_id(), $variation->get_id() );
 			}
-			return null;
 		}
 		if ( $write_log && $variation->managing_stock() && null === $variation->get_stock_quantity() ) {
 			TVES_Logger::log( 'warning', __( 'Variation has stock management enabled but no stock quantity.', 'torob-variable-exporter' ), $parent->get_id(), $variation->get_id() );
@@ -41,8 +41,8 @@ class TVES_Variation_Handler {
 			'sku'             => (string) $variation->get_sku(),
 			'regular_price'   => TVES_Product_Handler::price_or_null( $variation->get_regular_price() ),
 			'sale_price'      => TVES_Product_Handler::price_or_null( $variation->get_sale_price() ),
-			'price'           => (float) $price,
-			'availability'    => $variation->is_in_stock() ? 'in_stock' : 'out_of_stock',
+			'price'           => $has_price ? (float) $price : 0.0,
+			'availability'    => $has_price && $variation->is_in_stock() ? 'in_stock' : 'out_of_stock',
 			'stock_quantity'  => $variation->managing_stock() ? $variation->get_stock_quantity() : null,
 			'image'           => $image_id ? (string) wp_get_attachment_image_url( $image_id, 'full' ) : '',
 			'url'             => $this->get_variation_url( $variation, $parent ),

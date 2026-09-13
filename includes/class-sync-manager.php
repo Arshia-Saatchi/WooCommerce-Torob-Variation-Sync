@@ -17,6 +17,7 @@ class TVES_Sync_Manager {
 	private const BATCH_LOCK_TTL = 5 * MINUTE_IN_SECONDS;
 	private const STALL_TIMEOUT = 90;
 	private const MAX_BATCH_RETRIES = 3;
+	private const AJAX_FALLBACK_DELAY = 10;
 
 	private TVES_Feed_Generator $feed_generator;
 	private ?TVES_Torob_V3_Catalog $v3_catalog;
@@ -241,6 +242,36 @@ class TVES_Sync_Manager {
 			update_option( self::STATE_KEY, $state, false );
 			TVES_Logger::log( 'warning', __( 'A stalled feed synchronization was detected and automatically resumed.', 'torob-variable-exporter' ), 0, 0, array( 'page' => (int) $state['page'], 'generation' => (string) $state['version'], 'recovery_count' => (int) $state['recovery_count'] ) );
 		}
+	}
+
+	/**
+	 * Process one due batch from the authenticated status poll when WP-Cron stalls.
+	 *
+	 * The normal cron runner remains primary. This fallback only runs after the
+	 * expected batch delay and uses the same generation and mutex protections.
+	 */
+	public function maybe_process_due_batch(): void {
+		$state = (array) get_option( self::STATE_KEY, array() );
+		if ( empty( $state['version'] ) || empty( $state['page'] ) ) {
+			return;
+		}
+
+		$now           = time();
+		$last_activity = max( (int) ( $state['last_activity'] ?? 0 ), (int) ( $state['started_at'] ?? 0 ) );
+		if ( $last_activity > $now - self::AJAX_FALLBACK_DELAY ) {
+			return;
+		}
+
+		$args       = array( (string) $state['version'] );
+		$next_batch = wp_next_scheduled( self::BATCH_HOOK, $args );
+		if ( $next_batch && $next_batch > $now ) {
+			return;
+		}
+		if ( $next_batch ) {
+			wp_unschedule_event( $next_batch, self::BATCH_HOOK, $args );
+		}
+
+		$this->process_batch( (string) $state['version'] );
 	}
 
 	/** Queue one generation-specific batch and report scheduling failures. */

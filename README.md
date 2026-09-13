@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.4.0<br>
+**نسخه:** 1.5.0<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -19,6 +19,7 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 ### قابلیت‌ها
 
 - خروجی محصولات ساده ووکامرس
+- ارسال محصولات بدون قیمت به‌صورت ناموجود با `current_price: 0` و `availability: false`
 - تبدیل هر Variation به یک محصول مستقل در فید
 - ساخت لینک مستقیم با ویژگی‌های انتخاب‌شده و `variation_id`
 - تنظیم قالب عنوان محصول
@@ -30,10 +31,12 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 - پذیرش امن audience دامنه اصلی در هر دو حالت `www` و بدون `www`
 - صفحات دقیقاً ۱۰۰ آیتمی و مرتب‌سازی براساس تاریخ ایجاد یا ویرایش
 - جست‌وجوی تکی/گروهی محصول با `page_url` یا `page_unique`
+- تطبیق مقاوم URL محصول در برابر تفاوت `www`، اسلش پایانی، پروتکل و ترتیب پارامترها
 - کاتالوگ دیتابیسی نسخه‌دار با فعال‌سازی اتمیک پس از Sync کامل
 - همگام‌سازی دستی، ساعتی، هر ۶ ساعت یا روزانه
 - پردازش مرحله‌ای برای فروشگاه‌های بزرگ
 - نمایش زنده پیشرفت همگام‌سازی با AJAX
+- ادامه خودکار Batchهای Sync از طریق AJAX در صورت اجرا نشدن WP-Cron
 - صفحه گزارش با فیلتر، تازه‌سازی و صفحه‌بندی کاملاً AJAX
 - خروجی UTF-8 با فرمت CSV و TXT
 - پاک‌کردن تمام لاگ‌ها به‌صورت امن و AJAX همراه با تأیید کاربر
@@ -59,7 +62,7 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 3. فایل ZIP را نصب و فعال کنید.
 4. به **ووکامرس ← Torob Variable Sync** بروید.
 5. تنظیمات عنوان، ویژگی‌ها، حذف‌ها و زمان‌بندی را ذخیره کنید.
-6. روی **Regenerate feed now** بزنید.
+6. روی **Regenerate feed now** بزنید و صفحه تنظیمات را تا پایان عملیات باز نگه دارید؛ اگر WP-Cron اجرا نشود، AJAX ادامه Batchها را انجام می‌دهد.
 7. نتیجه را در **ووکامرس ← Torob Logs** بررسی کنید.
 8. آدرس **Official Torob Product API v3** را برای پشتیبانی ترب ارسال کنید.
 
@@ -206,6 +209,14 @@ WooCommerce-Torob-Variation-Sync/
 
 ### تاریخچه نسخه‌ها
 
+#### 1.5.0
+
+- اضافه‌شدن محصولات و Variationهای بدون قیمت به API با قیمت صفر و وضعیت ناموجود
+- جلوگیری از برداشت «محصول رایگان» با اجبار `availability: false` برای آیتم فاقد قیمت
+- اضافه‌شدن ادامه‌دهنده AJAX برای پردازش Batchهای سررسیدشده در صورت اختلال WP-Cron
+- نرمال‌سازی جست‌وجوی `page_urls` نسبت به `www`، HTTP/HTTPS، اسلش پایانی و ترتیب Query String
+- حفظ تطابق دقیق با کاتالوگ‌های قبلی تا زمان تکمیل اولین بازسازی نسخه جدید
+
 #### 1.4.0
 
 - اضافه‌شدن دکمه «پاک کردن همه لاگ‌ها» با تأیید کاربر و اجرای کاملاً AJAX
@@ -293,6 +304,7 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 ### Features
 
 - WooCommerce simple-product export
+- Products without prices exported as unavailable with `current_price: 0` and `availability: false`
 - One standalone feed item per variation
 - Direct variation URLs with selected attributes and `variation_id`
 - Configurable title formats and custom templates
@@ -304,10 +316,12 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 - Safely accepts the canonical shop audience with or without the `www` prefix
 - Exact 100-item pages with date-added and date-updated sorting
 - Product lookup by `page_url` or `page_unique`
+- URL lookup normalization for `www`, trailing slashes, protocol, and query-parameter order
 - Generation-based persistent catalog with atomic activation
 - Manual, hourly, six-hour, or daily synchronization
 - Batched processing for large catalogs
 - Live AJAX synchronization progress
+- AJAX continuation of due synchronization batches when WP-Cron is unavailable
 - Fully AJAX-powered log filters, refresh, counters, and pagination
 - UTF-8 CSV and TXT log exports
 - Secure AJAX log clearing with an explicit confirmation step
@@ -333,7 +347,7 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 3. Install and activate the ZIP.
 4. Open **WooCommerce → Torob Variable Sync**.
 5. Save the title, attribute, exclusion, and schedule settings.
-6. Select **Regenerate feed now**.
+6. Select **Regenerate feed now** and keep the settings page open until completion; AJAX continues due batches if WP-Cron is unavailable.
 7. Verify the result under **WooCommerce → Torob Logs**.
 8. Send the **Official Torob Product API v3** endpoint shown in settings to Torob support.
 
@@ -437,6 +451,14 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 1.5.0
+
+- Added products and variations without prices to the API as unavailable zero-price items.
+- Forced `availability: false` for missing-price items so they cannot be interpreted as free products.
+- Added an AJAX fallback that processes due synchronization batches when WP-Cron stalls.
+- Normalized `page_urls` lookups across `www`, HTTP/HTTPS, trailing slashes, and query-string order.
+- Retained exact-hash compatibility with existing catalogs until the first new regeneration completes.
 
 #### 1.4.0
 

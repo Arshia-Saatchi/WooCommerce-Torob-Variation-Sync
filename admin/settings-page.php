@@ -29,7 +29,7 @@ $notice              = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) );
 	</header>
 
 	<?php if ( 'sync-started' === $notice ) : ?>
-		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Feed synchronization started. Remaining pages will continue through WP-Cron.', 'torob-variable-exporter' ); ?></p></div>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Feed synchronization started. Keep this page open; AJAX progress will continue the remaining batches if WP-Cron is unavailable.', 'torob-variable-exporter' ); ?></p></div>
 	<?php elseif ( 'sync-error' === $notice ) : ?>
 		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'The synchronization could not be started. Review Torob Logs for details.', 'torob-variable-exporter' ); ?></p></div>
 	<?php endif; ?>
