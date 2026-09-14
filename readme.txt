@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,7 @@ Torob Variable Product Exporter محصولات ساده و Variationهای وو�
 * پذیرش امن audience دامنه فروشگاه با www یا بدون www
 * کاتالوگ نسخه‌دار با صفحه‌های دقیقاً ۱۰۰ آیتمی
 * جست‌وجو با page_urls و page_uniques و دو مرتب‌سازی رسمی
-* نرمال‌سازی URL برای www، اسلش پایانی، پروتکل و ترتیب پارامترها
+* نرمال‌سازی URL برای www، اسلش پایانی، پروتکل، ترتیب پارامترها و تغییر شناسه داخلی Variation
 * نمایش آخرین درخواست معتبر ترب و ثبت آن در Torob Logs
 * نمایش زنده پیشرفت همگام‌سازی
 * ادامه Batchهای سررسیدشده با AJAX در صورت اختلال WP-Cron
@@ -84,7 +84,7 @@ Features:
 * Secure audience compatibility for the shop host with or without www
 * Exact 100-item, generation-based catalog pages
 * page_urls/page_uniques lookup modes and both official sort modes
-* URL lookup normalization for www, protocol, trailing slash, and query order
+* URL lookup normalization for www, protocol, trailing slash, query order, and changed internal variation IDs
 * Last authenticated Torob access visibility and logging
 * Live synchronization progress
 * AJAX continuation for due batches when WP-Cron stalls
@@ -124,6 +124,12 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 1.5.1 =
+* Fixes empty single-product responses for historical URLs whose internal variation ID has changed.
+* Adds a stable URL index based on the product path and selected attributes while keeping exact matches first.
+* Automatically upgrades existing catalogs without deleting settings or logs.
+* Logs counts and samples of unresolved lookup values for CSV/TXT diagnostics.
 
 = 1.5.0 =
 * Exports products and variations without prices as unavailable with current_price 0.

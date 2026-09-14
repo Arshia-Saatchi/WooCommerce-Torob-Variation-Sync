@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.5.0<br>
+**نسخه:** 1.5.1<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -31,7 +31,7 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 - پذیرش امن audience دامنه اصلی در هر دو حالت `www` و بدون `www`
 - صفحات دقیقاً ۱۰۰ آیتمی و مرتب‌سازی براساس تاریخ ایجاد یا ویرایش
 - جست‌وجوی تکی/گروهی محصول با `page_url` یا `page_unique`
-- تطبیق مقاوم URL محصول در برابر تفاوت `www`، اسلش پایانی، پروتکل و ترتیب پارامترها
+- تطبیق مقاوم URL محصول در برابر تفاوت `www`، اسلش پایانی، پروتکل، ترتیب پارامترها و تغییر شناسه داخلی Variation
 - کاتالوگ دیتابیسی نسخه‌دار با فعال‌سازی اتمیک پس از Sync کامل
 - همگام‌سازی دستی، ساعتی، هر ۶ ساعت یا روزانه
 - پردازش مرحله‌ای برای فروشگاه‌های بزرگ
@@ -122,6 +122,8 @@ X-Torob-Token-Version: 1
 
 مرتب‌سازی `date_updated_desc` و جست‌وجو با `page_urls` یا `page_uniques` نیز مطابق مستندات رسمی پشتیبانی می‌شود. هر صفحه کامل شامل دقیقاً ۱۰۰ آیتم است و فقط صفحه آخر می‌تواند کمتر باشد.
 
+در جست‌وجوی `page_urls` ابتدا URL دقیق بررسی می‌شود. اگر ترب URL قدیمی یک Variation را با `variation_id` منقضی‌شده ارسال کند، افزونه با حفظ مسیر محصول و ویژگی‌های انتخاب‌شده (مانند رنگ) Variation فعلی متناظر را پیدا می‌کند. اگر هیچ محصول متناظری وجود نداشته باشد، درخواست در لاگ با وضعیت Warning و مقادیر یافت‌نشده ثبت می‌شود.
+
 بعد از نصب یا تغییر محصولات، یک Sync کامل اجرا کنید تا کاتالوگ v3 ساخته شود. زمان آخرین درخواست JWT معتبر ترب در کارت API v3 نمایش داده می‌شود و همان درخواست در **Torob Logs** با پیام `Torob Product API v3 request completed` ثبت خواهد شد. این رویداد نشان‌دهنده تماس واقعی ترب با API است؛ پیام `Feed synchronization completed` فقط آماده‌شدن کاتالوگ داخل سایت را نشان می‌دهد.
 
 فید قدیمی `/wp-json/torob/v1/products` برای سازگاری باقی مانده، ولی نباید به‌عنوان API رسمی v3 به ترب معرفی شود.
@@ -208,6 +210,13 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 1.5.1
+
+- رفع پاسخ خالی جست‌وجوی تک‌محصول برای URLهای قدیمی که شناسه داخلی Variation آن‌ها تغییر کرده است
+- افزودن شاخص پایدار URL براساس مسیر و ویژگی‌ها، همراه با اولویت تطبیق دقیق
+- ارتقای خودکار کاتالوگ‌های قبلی بدون حذف تنظیمات یا لاگ‌ها
+- ثبت تعداد و نمونه مقادیر یافت‌نشده در لاگ و خروجی CSV/TXT برای عیب‌یابی درخواست‌های ترب
 
 #### 1.5.0
 
@@ -451,6 +460,13 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 1.5.1
+
+- Fixed empty single-product responses for historical URLs whose internal variation ID has changed.
+- Added a stable URL index based on the product path and selected attributes while preserving exact-match priority.
+- Automatically upgrades existing catalogs without deleting settings or logs.
+- Logs counts and samples of unresolved lookup values in CSV/TXT diagnostics.
 
 #### 1.5.0
 

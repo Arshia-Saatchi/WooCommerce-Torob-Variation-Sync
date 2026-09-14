@@ -76,6 +76,8 @@ class TVES_Torob_V3_API {
 			return $this->error( __( 'The Torob API v3 catalog is not ready. Run a complete feed synchronization first.', 'torob-variable-exporter' ), 503 );
 		}
 
+		$items   = array();
+		$missing = array();
 		if ( 'page' === $mode ) {
 			$page   = (int) $body['page'];
 			$result = $this->catalog->get_page( $page, (string) $body['sort'] );
@@ -83,27 +85,37 @@ class TVES_Torob_V3_API {
 			$page   = 1;
 			$items  = array_map( 'strval', $body['page_urls'] );
 			$found  = $this->catalog->find_by_urls( $items );
+			$missing = $this->missing_lookup_values( $mode, $items, $found );
 			$result = array( 'products' => $found, 'total' => count( $found ), 'max_pages' => 1 );
 		} else {
 			$page   = 1;
 			$items  = array_map( 'strval', $body['page_uniques'] );
 			$found  = $this->catalog->find_by_uniques( $items );
+			$missing = $this->missing_lookup_values( $mode, $items, $found );
 			$result = array( 'products' => $found, 'total' => count( $found ), 'max_pages' => 1 );
 		}
 
 		update_option( 'tves_v3_last_access', time(), false );
+		$log_context = array(
+			'mode'         => $mode,
+			'page'         => $page,
+			'returned'     => count( $result['products'] ),
+			'request_host' => $request_host,
+			'audience'     => $validation['aud'] ?? '',
+		);
+		if ( 'page' !== $mode ) {
+			$log_context['requested']     = count( $items );
+			$log_context['missing_count'] = count( $missing );
+			$log_context['missing']       = array_slice( $missing, 0, 20 );
+		}
 		TVES_Logger::log(
-			'success',
-			__( 'Torob Product API v3 request completed.', 'torob-variable-exporter' ),
+			$missing ? 'warning' : 'success',
+			$missing
+				? __( 'Torob Product API v3 lookup completed with products missing from the active catalog.', 'torob-variable-exporter' )
+				: __( 'Torob Product API v3 request completed.', 'torob-variable-exporter' ),
 			0,
 			0,
-			array(
-				'mode'         => $mode,
-				'page'         => $page,
-				'returned'     => count( $result['products'] ),
-				'request_host' => $request_host,
-				'audience'     => $validation['aud'] ?? '',
-			)
+			$log_context
 		);
 
 		$response = new WP_REST_Response(
@@ -118,6 +130,34 @@ class TVES_Torob_V3_API {
 		);
 		$response->header( 'Cache-Control', 'private, no-store, max-age=0' );
 		return $response;
+	}
+
+	/** Identify lookup values for which no current catalog product was returned. */
+	private function missing_lookup_values( string $mode, array $requested, array $found ): array {
+		$missing = array();
+		if ( 'page_uniques' === $mode ) {
+			$found_uniques = array_fill_keys( array_map( static fn( array $product ): string => (string) ( $product['page_unique'] ?? '' ), $found ), true );
+			foreach ( $requested as $value ) {
+				if ( ! isset( $found_uniques[ (string) $value ] ) ) {
+					$missing[] = (string) $value;
+				}
+			}
+			return $missing;
+		}
+
+		foreach ( $requested as $requested_url ) {
+			$matched = false;
+			foreach ( $found as $product ) {
+				if ( TVES_Torob_V3_Catalog::urls_match( (string) $requested_url, (string) ( $product['page_url'] ?? '' ) ) ) {
+					$matched = true;
+					break;
+				}
+			}
+			if ( ! $matched ) {
+				$missing[] = (string) $requested_url;
+			}
+		}
+		return $missing;
 	}
 
 	/** Require exactly one supported lookup/page request shape. */

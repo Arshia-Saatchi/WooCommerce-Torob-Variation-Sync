@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Torob Variable Product Exporter
  * Description: Exports WooCommerce simple products and individual variations through a Torob-ready REST feed.
- * Version:     1.5.0
+ * Version:     1.5.1
  * Author:      ARSHIA
  * Text Domain: torob-variable-exporter
  * Requires at least: 6.5
@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TVES_VERSION', '1.5.0' );
+define( 'TVES_VERSION', '1.5.1' );
 define( 'TVES_FILE', __FILE__ );
 define( 'TVES_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TVES_URL', plugin_dir_url( __FILE__ ) );
