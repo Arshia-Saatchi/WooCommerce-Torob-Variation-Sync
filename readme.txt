@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.10
+Stable tag: 2.0.0-beta.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.11 =
+* Removes the duplicate R from the horizontal logo to form the symbolic R plus ESA lockup.
+* Unifies the WordPress admin icon with the same symbolic R used in the main logo.
+* Preserves genuine alpha transparency and adds brand-asset regression checks.
 
 = 2.0.0-beta.10 =
 * Redesigns exclusion-row removal as a modern icon-and-label action.

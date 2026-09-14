@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.10<br>
+**نسخه:** 2.0.0-beta.11<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -218,6 +218,13 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.11
+
+- حذف حرف `R` تکراری از لوگوی افقی و تبدیل ترکیب نوشتاری به `R نمادین + ESA`
+- یکسان‌سازی آیکن منوی وردپرس با همان `R` نمادین اصلی لوگوی رسا
+- حفظ پس‌زمینه شفاف واقعی، رنگ‌ها و گرادیان‌های هویت بصری فعلی
+- گسترش تست برند برای کنترل مربع‌بودن آیکن، افقی‌بودن لوگو و وجود کانال Alpha
 
 #### 2.0.0-beta.10
 
@@ -542,6 +549,13 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.11
+
+- Removes the duplicate text `R` from the horizontal lockup, leaving the symbolic `R + ESA`.
+- Aligns the WordPress admin icon with the same primary symbolic `R` used by the RESA logo.
+- Preserves genuine transparency, colors, and gradients across both brand assets.
+- Extends brand regression checks for icon shape, horizontal proportions, and alpha transparency.
 
 #### 2.0.0-beta.10
 
