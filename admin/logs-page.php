@@ -22,7 +22,7 @@ $all_logs_url = add_query_arg( array( 'page' => 'tves-logs' ), admin_url( 'admin
 			<span class="tves-brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
 			<div><h1><?php esc_html_e( 'گزارش فعالیت ترب', 'torob-variable-exporter' ); ?></h1><p><?php esc_html_e( 'رویدادهای کاتالوگ را ببینید، خطاهای محصولات را بررسی کنید و گزارش قابل ارسال دریافت کنید.', 'torob-variable-exporter' ); ?></p></div>
 		</div>
-		<div class="tves-header-actions"><a class="button tves-button-quiet" href="<?php echo esc_url( admin_url( 'admin.php?page=tves-settings' ) ); ?>"><span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span><?php esc_html_e( 'بازگشت به تنظیمات', 'torob-variable-exporter' ); ?></a><span class="tves-version-badge"><span><?php echo esc_html( 'v' . TVES_VERSION ); ?></span><?php esc_html_e( 'آزمایشی', 'torob-variable-exporter' ); ?></span></div>
+		<div class="tves-header-actions"><a class="button tves-button-quiet" href="<?php echo esc_url( admin_url( 'admin.php?page=tves-settings' ) ); ?>"><span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span><?php esc_html_e( 'بازگشت به تنظیمات', 'torob-variable-exporter' ); ?></a><span class="tves-version-badge"><span><?php echo esc_html( 'v' . TVES_VERSION ); ?></span><?php esc_html_e( 'پایدار', 'torob-variable-exporter' ); ?></span></div>
 	</header>
 
 	<nav class="tves-log-summary" aria-label="<?php esc_attr_e( 'خلاصه وضعیت گزارش‌ها', 'torob-variable-exporter' ); ?>">

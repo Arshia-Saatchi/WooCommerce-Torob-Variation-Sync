@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.12<br>
+**نسخه:** 2.0.0<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -49,7 +49,7 @@
 - توکن اختیاری برای محافظت از فید
 - سازگاری با HPOS ووکامرس
 - رابط مدیریتی واکنش‌گرا و سازگار با RTL
-- رابط نسل دوم آزمایشی با مسیر وضعیت API، کاتالوگ و Sync
+- رابط پایدار نسل دوم با مسیر وضعیت API، کاتالوگ و همگام‌سازی
 - جست‌وجوی سریع دسته‌ها در Exclusions و توضیح روشن محدوده هر نوع حذف
 - نمایش بازشونده جزئیات فنی داخل هر ردیف لاگ
 - کپی سریع Endpointهای API از صفحه تنظیمات
@@ -68,10 +68,10 @@
 1. فایل ZIP آماده را از بخش Releases دانلود کنید. اگر از سورس ZIP می‌سازید، فایل‌ها را داخل پوشه سطح اول `torob-variable-exporter` قرار دهید.
 2. در مدیریت وردپرس به **افزونه‌ها ← افزودن افزونه تازه ← بارگذاری افزونه** بروید.
 3. فایل ZIP را نصب و فعال کنید.
-4. به **ووکامرس ← Torob Variable Sync** بروید.
+4. از منوی اصلی مدیریت وردپرس، **رسا** را باز کنید.
 5. تنظیمات عنوان، ویژگی‌ها، حذف‌ها و زمان‌بندی را ذخیره کنید.
-6. روی **Regenerate feed now** بزنید و صفحه تنظیمات را تا پایان عملیات باز نگه دارید؛ اگر WP-Cron اجرا نشود، AJAX ادامه Batchها را انجام می‌دهد.
-7. نتیجه را در **ووکامرس ← Torob Logs** بررسی کنید.
+6. در تب **نمای کلی** روی **بازسازی کاتالوگ** بزنید و صفحه را تا پایان عملیات باز نگه دارید؛ اگر WP-Cron اجرا نشود، AJAX ادامه Batchها را انجام می‌دهد.
+7. نتیجه را در تب **گزارش‌ها** بررسی کنید.
 8. آدرس **Official Torob Product API v3** را برای پشتیبانی ترب ارسال کنید.
 
 برای به‌روزرسانی، افزونه قبلی را حذف نکنید. ZIP جدید را بارگذاری و گزینه جایگزینی نسخه فعلی را انتخاب کنید تا تنظیمات و گزارش‌ها حفظ شوند.
@@ -218,6 +218,14 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0
+
+- انتشار رسمی و پایدار نسل دوم رسا پس از تکمیل چرخه نسخه‌های آزمایشی
+- تثبیت داشبورد یکپارچه فارسی، تب‌های AJAX، گزارش‌ها، حذف‌های محصول/انتخاب و نمایش زنده همگام‌سازی
+- تثبیت API رسمی ترب نسخه ۳، اعتبارسنجی JWT، کاتالوگ اتمیک و بازیابی خودکار پردازش‌های متوقف‌شده
+- ثبت WooCommerce به‌عنوان وابستگی رسمی افزونه و جایگزینی نشان «آزمایشی» با «پایدار»
+- اجرای کنترل کامل انتشار روی PHP، JavaScript، ساختار برند، مستندات و مجموعه تست‌ها
 
 #### 2.0.0-beta.12
 
@@ -435,6 +443,7 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 - Optional feed access token
 - WooCommerce HPOS compatibility declaration
 - Responsive, RTL-safe admin interface
+- Stable second-generation operations dashboard with AJAX navigation
 
 ### Requirements
 
@@ -450,10 +459,10 @@ Each variation can include its own stable ID, parent ID, title, selected attribu
 1. Download the installable ZIP from GitHub Releases. When building from source, place the files inside a top-level `torob-variable-exporter` directory before creating the ZIP.
 2. In WordPress, open **Plugins → Add New Plugin → Upload Plugin**.
 3. Install and activate the ZIP.
-4. Open **WooCommerce → Torob Variable Sync**.
+4. Open **RESA** from the main WordPress admin menu.
 5. Save the title, attribute, exclusion, and schedule settings.
-6. Select **Regenerate feed now** and keep the settings page open until completion; AJAX continues due batches if WP-Cron is unavailable.
-7. Verify the result under **WooCommerce → Torob Logs**.
+6. In **Overview**, select **Rebuild catalog** and keep the page open until completion; AJAX continues due batches if WP-Cron is unavailable.
+7. Verify the result in the **Logs** tab.
 8. Send the **Official Torob Product API v3** endpoint shown in settings to Torob support.
 
 When updating, do not delete the installed plugin. Upload the new ZIP and replace the current version so settings and logs remain intact.
@@ -556,6 +565,14 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0
+
+- Publishes the stable second-generation RESA release after the complete beta cycle.
+- Stabilizes the unified Persian dashboard, AJAX tabs, logs, product/variation exclusions, and live synchronization progress.
+- Stabilizes the official Torob API v3 integration, JWT validation, atomic catalog activation, and stalled-batch recovery.
+- Declares WooCommerce as a formal plugin dependency and replaces experimental badges with stable badges.
+- Completes release validation across PHP, JavaScript, brand assets, documentation, and regression tests.
 
 #### 2.0.0-beta.12
 

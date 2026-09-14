@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.12
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,9 +43,9 @@ API رسمی v3 در آدرس `/wp-json/torob/v3/products` قرار دارد. ا
 
 1. فایل ZIP افزونه را از بخش افزودن افزونه وردپرس بارگذاری کنید.
 2. افزونه را فعال کنید.
-3. وارد ووکامرس > Torob Variable Sync شوید.
-4. تنظیمات را ذخیره، Regenerate feed now را اجرا و صفحه را تا تکمیل عملیات باز نگه دارید.
-5. نتیجه را در ووکامرس > Torob Logs بررسی کنید.
+3. از منوی اصلی مدیریت وردپرس وارد رسا شوید.
+4. تنظیمات را ذخیره، از نمای کلی بازسازی کاتالوگ را اجرا و صفحه را تا تکمیل عملیات باز نگه دارید.
+5. نتیجه را در تب گزارش‌ها بررسی کنید.
 6. آدرس Official Torob Product API v3 را از کارت بالای تنظیمات برای پشتیبانی ترب ارسال کنید.
 
 برای به‌روزرسانی، افزونه قبلی را حذف نکنید. ZIP جدید را بارگذاری و نسخه فعلی را جایگزین کنید تا تنظیمات و گزارش‌ها حفظ شوند.
@@ -93,7 +93,7 @@ Features:
 * Confirmed AJAX log clearing, automatic 30-day cleanup, and a 20,000-record cap
 * Optional feed token, capability checks, nonces, sanitization, and escaping
 * HPOS compatibility and responsive RTL-safe administration
-* Experimental second-generation operations UI with a connected API/catalog/sync status rail
+* Stable second-generation operations UI with a connected API/catalog/sync status rail
 * Instant exclusion-category filtering and clear exclusion-scope guidance
 * Expandable technical context inside log rows and one-click endpoint copying
 
@@ -103,9 +103,9 @@ The official API is available at `/wp-json/torob/v3/products`. Send this URL to 
 
 1. Upload the plugin ZIP from WordPress Plugins > Add New Plugin > Upload Plugin.
 2. Activate the plugin.
-3. Open WooCommerce > Torob Variable Sync.
-4. Save the settings, select Regenerate feed now, and keep the page open until completion.
-5. Verify the result under WooCommerce > Torob Logs.
+3. Open RESA from the main WordPress admin menu.
+4. Save the settings, select Rebuild catalog from Overview, and keep the page open until completion.
+5. Verify the result in the Logs tab.
 6. Send the Official Torob Product API v3 URL shown in settings to Torob support.
 
 When updating, upload the new ZIP and replace the current plugin. Do not delete it first if you want to retain settings and logs.
@@ -127,6 +127,13 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0 =
+* Publishes the stable second-generation RESA release after the complete beta cycle.
+* Stabilizes the unified Persian dashboard, AJAX tabs, logs, exclusions, and live synchronization progress.
+* Stabilizes Torob API v3, JWT validation, atomic catalog activation, and stalled-batch recovery.
+* Declares WooCommerce as a formal dependency and replaces experimental badges with stable badges.
+* Completes PHP, JavaScript, brand, documentation, and regression-test validation.
 
 = 2.0.0-beta.12 =
 * Aligns the symbolic R precisely with the ESA baseline.

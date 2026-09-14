@@ -16,7 +16,7 @@ $notice = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) ); // phpcs:ign
 			<span class="tves-brand-wordmark"><img src="<?php echo esc_url( add_query_arg( 'ver', TVES_VERSION, TVES_URL . 'assets/images/resa-logo-horizontal.png' ) ); ?>" alt="<?php esc_attr_e( 'رسا — RESA', 'torob-variable-exporter' ); ?>"></span>
 			<div><h1><?php esc_html_e( 'مرکز مدیریت اتصال ترب', 'torob-variable-exporter' ); ?></h1><p><?php esc_html_e( 'کاتالوگ ووکامرس، ارتباط امن با ترب و گزارش‌های همگام‌سازی را یک‌جا مدیریت کنید.', 'torob-variable-exporter' ); ?></p></div>
 		</div>
-		<div class="tves-header-actions"><span class="tves-version-badge"><span><?php echo esc_html( 'v' . TVES_VERSION ); ?></span><?php esc_html_e( 'آزمایشی', 'torob-variable-exporter' ); ?></span></div>
+		<div class="tves-header-actions"><span class="tves-version-badge"><span><?php echo esc_html( 'v' . TVES_VERSION ); ?></span><?php esc_html_e( 'پایدار', 'torob-variable-exporter' ); ?></span></div>
 	</header>
 
 	<?php if ( 'sync-started' === $notice ) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'بازسازی کاتالوگ شروع شد و پیشرفت آن در نمای کلی نمایش داده می‌شود.', 'torob-variable-exporter' ); ?></p></div><?php elseif ( 'sync-error' === $notice ) : ?><div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'بازسازی شروع نشد. برای مشاهده علت، تب گزارش‌ها را بررسی کنید.', 'torob-variable-exporter' ); ?></p></div><?php endif; ?>
