@@ -13,8 +13,8 @@ $notice = sanitize_key( wp_unslash( $_GET['tves_notice'] ?? '' ) ); // phpcs:ign
 <div class="wrap tves-wrap tves-settings-screen" data-active-tab="<?php echo esc_attr( $active_tab ); ?>">
 	<header class="tves-page-header">
 		<div class="tves-brand-lockup">
-			<span class="tves-brand-mark" aria-hidden="true"><img src="<?php echo esc_url( TVES_URL . 'assets/images/resa-icon.png' ); ?>" alt=""></span>
-			<div><div class="tves-brand-name"><b>RESA</b><span><?php esc_html_e( 'رسا', 'torob-variable-exporter' ); ?></span></div><h1><?php esc_html_e( 'مرکز مدیریت اتصال ترب', 'torob-variable-exporter' ); ?></h1><p><?php esc_html_e( 'کاتالوگ ووکامرس، ارتباط امن با ترب و گزارش‌های همگام‌سازی را یک‌جا مدیریت کنید.', 'torob-variable-exporter' ); ?></p></div>
+			<span class="tves-brand-wordmark"><img src="<?php echo esc_url( TVES_URL . 'assets/images/resa-logo-horizontal.png' ); ?>" alt="<?php esc_attr_e( 'رسا — RESA', 'torob-variable-exporter' ); ?>"></span>
+			<div><h1><?php esc_html_e( 'مرکز مدیریت اتصال ترب', 'torob-variable-exporter' ); ?></h1><p><?php esc_html_e( 'کاتالوگ ووکامرس، ارتباط امن با ترب و گزارش‌های همگام‌سازی را یک‌جا مدیریت کنید.', 'torob-variable-exporter' ); ?></p></div>
 		</div>
 		<div class="tves-header-actions"><span class="tves-version-badge"><span><?php echo esc_html( 'v' . TVES_VERSION ); ?></span><?php esc_html_e( 'آزمایشی', 'torob-variable-exporter' ); ?></span></div>
 	</header>

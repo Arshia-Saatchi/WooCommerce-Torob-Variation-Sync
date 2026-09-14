@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.6
+Stable tag: 2.0.0-beta.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.7 =
+* Uses the transparent horizontal RESA logo in the dashboard header.
+* Adds a restrained contrast surface and responsive logo sizing.
+* Removes the duplicate RESA label from the header.
 
 = 2.0.0-beta.6 =
 * Prevents the full-size RESA source icon from rendering below the dashboard.
