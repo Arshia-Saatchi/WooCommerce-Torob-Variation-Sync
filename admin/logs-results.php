@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $total_pages = max( 1, (int) ceil( $log_result['total'] / 30 ) );
-$pagination_args = array( 'page' => 'tves-logs' );
+$pagination_args = array( 'page' => 'tves-settings', 'tab' => 'logs' );
 if ( $status ) {
 	$pagination_args['status'] = $status;
 }

@@ -1,8 +1,19 @@
 ( function ( $ ) {
 	'use strict';
 
+	var dashboardRequest = null;
+	var logRequest = null;
+	var syncTimer = null;
+
 	function toggleTemplate() {
 		$( '.tves-template-row' ).toggle( 'custom' === $( '#tves-title-format' ).val() );
+	}
+
+	function scheduleSyncPoll( delay ) {
+		window.clearTimeout( syncTimer );
+		if ( $( '#tves-sync-card' ).length ) {
+			syncTimer = window.setTimeout( pollSyncStatus, delay );
+		}
 	}
 
 	function pollSyncStatus() {
@@ -10,22 +21,12 @@
 		if ( ! $card.length || 'undefined' === typeof tvesAdmin ) {
 			return;
 		}
-
-		$.ajax( {
-			url: tvesAdmin.ajaxUrl,
-			method: 'POST',
-			dataType: 'json',
-			data: {
-				action: 'tves_sync_status',
-				nonce: tvesAdmin.syncNonce
-			}
-		} ).done( function ( response ) {
-			if ( ! response.success || ! response.data ) {
+		$.post( tvesAdmin.ajaxUrl, { action: 'tves_sync_status', nonce: tvesAdmin.syncNonce }, null, 'json' ).done( function ( response ) {
+			if ( ! response.success || ! response.data || ! $( '#tves-sync-card' ).length ) {
 				return;
 			}
-
 			var data = response.data;
-			$card.attr( 'data-running', data.running ? '1' : '0' );
+			$( '#tves-sync-card' ).attr( 'data-running', data.running ? '1' : '0' );
 			$( '#tves-sync-signal' ).toggleClass( 'is-running', Boolean( data.running ) ).toggleClass( 'is-ready', ! data.running );
 			$( '#tves-sync-status' ).text( data.status_label );
 			$( '#tves-live-label' ).text( data.running ? tvesAdmin.syncLive : tvesAdmin.syncReady );
@@ -33,21 +34,18 @@
 			$( '#tves-next-sync' ).text( data.next_sync );
 			$( '#tves-last-activity' ).text( data.last_activity );
 			$( '#tves-progress-label' ).text( data.progress_label );
-			$( '#tves-exported-count' ).text( data.exported_items );
+			$( '#tves-exported-count' ).text( Number( data.exported_items ).toLocaleString() );
 			$( '#tves-recovery-count' ).text( data.recovery_count + ' / ' + data.total_retries );
 			$( '.tves-progress' ).attr( 'aria-valuenow', data.percent );
 			$( '#tves-progress-bar' ).css( 'width', data.percent + '%' );
 			$( '#tves-v3-catalog-status' ).text( data.v3_catalog );
 			$( '#tves-v3-last-access' ).text( data.v3_last_access );
-
-			window.setTimeout( pollSyncStatus, data.running ? ( Number( tvesAdmin.pollInterval ) || 3000 ) : 30000 );
+			scheduleSyncPoll( data.running ? ( Number( tvesAdmin.pollInterval ) || 3000 ) : 30000 );
 		} ).fail( function () {
 			$( '#tves-progress-label' ).text( tvesAdmin.progressError );
-			window.setTimeout( pollSyncStatus, 30000 );
+			scheduleSyncPoll( 30000 );
 		} );
 	}
-
-	var logRequest = null;
 
 	function copyEndpoint( button ) {
 		var $button = $( button );
@@ -55,18 +53,11 @@
 		var text = target ? target.textContent.trim() : '';
 		var $label = $button.find( 'span' ).last();
 		var original = String( $button.data( 'label' ) || $label.text() );
-		var success = String( $button.data( 'success' ) || original );
-		if ( ! text || ! window.navigator.clipboard ) {
-			return;
-		}
-
+		if ( ! text || ! window.navigator.clipboard ) { return; }
 		window.navigator.clipboard.writeText( text ).then( function () {
 			$button.addClass( 'is-copied' );
-			$label.text( success );
-			window.setTimeout( function () {
-				$button.removeClass( 'is-copied' );
-				$label.text( original );
-			}, 1600 );
+			$label.text( String( $button.data( 'success' ) || original ) );
+			window.setTimeout( function () { $button.removeClass( 'is-copied' ); $label.text( original ); }, 1600 );
 		} );
 	}
 
@@ -78,51 +69,66 @@
 		} );
 	}
 
-	function observeSettingsSections() {
-		var links = Array.prototype.slice.call( document.querySelectorAll( '.tves-section-nav a' ) );
-		if ( ! links.length || ! window.IntersectionObserver ) {
-			return;
-		}
-		var observer = new window.IntersectionObserver( function ( entries ) {
-			entries.forEach( function ( entry ) {
-				if ( ! entry.isIntersecting ) {
-					return;
-				}
-				links.forEach( function ( link ) {
-					link.classList.toggle( 'is-current', link.getAttribute( 'href' ) === '#' + entry.target.id );
-				} );
-			} );
-		}, { rootMargin: '-25% 0px -65% 0px', threshold: 0 } );
+	function dashboardUrl( tab ) {
+		var url = new window.URL( window.location.href );
+		url.searchParams.set( 'page', 'tves-settings' );
+		url.searchParams.set( 'tab', tab );
+		url.searchParams.delete( 'status' );
+		url.searchParams.delete( 'paged' );
+		url.searchParams.delete( 'tves_notice' );
+		return url;
+	}
 
-		links.forEach( function ( link ) {
-			var section = document.querySelector( link.getAttribute( 'href' ) );
-			if ( section ) {
-				observer.observe( section );
+	function activateTab( tab ) {
+		$( '.tves-dashboard-tabs a' ).removeClass( 'is-current' ).removeAttr( 'aria-current' ).filter( '[data-tab="' + tab + '"]' ).addClass( 'is-current' ).attr( 'aria-current', 'page' );
+		$( '.tves-settings-screen' ).attr( 'data-active-tab', tab );
+	}
+
+	function initializeTab( tab ) {
+		toggleTemplate();
+		if ( 'overview' === tab ) { pollSyncStatus(); } else { window.clearTimeout( syncTimer ); }
+		if ( 'exclusions' === tab ) { $( document.body ).trigger( 'wc-enhanced-select-init' ); }
+	}
+
+	function loadDashboardTab( tab, options ) {
+		var $shell = $( '#tves-dashboard-content' );
+		var currentUrl = new window.URL( window.location.href );
+		var requestData;
+		options = options || {};
+		if ( ! $shell.length || 'undefined' === typeof tvesAdmin ) { return; }
+		if ( dashboardRequest ) { dashboardRequest.abort(); }
+		window.clearTimeout( syncTimer );
+		$shell.addClass( 'is-loading' ).attr( 'aria-busy', 'true' );
+		$shell.find( '.tves-dashboard-error' ).prop( 'hidden', true ).empty();
+		$( '.tves-dashboard-tabs a' ).attr( 'aria-disabled', 'true' );
+		requestData = { action: 'tves_load_dashboard_tab', nonce: tvesAdmin.dashboardNonce, tab: tab };
+		if ( 'logs' === tab ) {
+			requestData.status = currentUrl.searchParams.get( 'status' ) || '';
+			requestData.paged = currentUrl.searchParams.get( 'paged' ) || 1;
+		}
+		dashboardRequest = $.post( tvesAdmin.ajaxUrl, requestData, null, 'json' ).done( function ( response ) {
+			if ( ! response.success || ! response.data || 'undefined' === typeof response.data.html ) {
+				$shell.find( '.tves-dashboard-error' ).text( tvesAdmin.tabError ).prop( 'hidden', false ); return;
 			}
+			$shell.find( '.tves-dashboard-view' ).html( response.data.html );
+			$shell.attr( 'data-tab', response.data.tab );
+			activateTab( response.data.tab );
+			initializeTab( response.data.tab );
+			if ( options.history ) { window.history.pushState( { tvesTab: response.data.tab }, '', dashboardUrl( response.data.tab ).toString() ); }
+		} ).fail( function ( xhr, textStatus ) {
+			if ( 'abort' !== textStatus ) { $shell.find( '.tves-dashboard-error' ).text( tvesAdmin.tabError ).prop( 'hidden', false ); }
+		} ).always( function () {
+			$shell.removeClass( 'is-loading' ).attr( 'aria-busy', 'false' );
+			$( '.tves-dashboard-tabs a' ).removeAttr( 'aria-disabled' );
+			dashboardRequest = null;
 		} );
 	}
 
-	function getLogUrlState() {
-		var url = new window.URL( window.location.href );
-		return {
-			status: url.searchParams.get( 'status' ) || '',
-			paged: Math.max( 1, parseInt( url.searchParams.get( 'paged' ), 10 ) || 1 )
-		};
-	}
-
 	function setLogHistory( status, paged ) {
-		var url = new window.URL( window.location.href );
-		if ( status ) {
-			url.searchParams.set( 'status', status );
-		} else {
-			url.searchParams.delete( 'status' );
-		}
-		if ( paged > 1 ) {
-			url.searchParams.set( 'paged', paged );
-		} else {
-			url.searchParams.delete( 'paged' );
-		}
-		window.history.pushState( { tvesLogs: true, status: status, paged: paged }, '', url.toString() );
+		var url = dashboardUrl( 'logs' );
+		if ( status ) { url.searchParams.set( 'status', status ); }
+		if ( paged > 1 ) { url.searchParams.set( 'paged', paged ); }
+		window.history.pushState( { tvesTab: 'logs', status: status, paged: paged }, '', url.toString() );
 	}
 
 	function updateLogControls( data ) {
@@ -130,168 +136,59 @@
 		$( '#tves-log-results' ).attr( 'data-status', status ).attr( 'data-paged', data.paged || 1 );
 		$( '#tves-status-filter' ).val( status );
 		$( '.tves-log-export input[name="status"]' ).val( status );
-		$( '.tves-log-stat' ).removeClass( 'is-active' ).filter( function () {
-			return String( $( this ).data( 'status' ) || '' ) === status;
-		} ).addClass( 'is-active' );
-
-		if ( data.counts ) {
-			$.each( data.counts, function ( key, value ) {
-				$( '[data-log-count="' + key + '"]' ).text( Number( value ).toLocaleString() );
-			} );
-		}
+		$( '.tves-log-stat' ).removeClass( 'is-active' ).filter( function () { return String( $( this ).data( 'status' ) || '' ) === status; } ).addClass( 'is-active' );
+		if ( data.counts ) { $.each( data.counts, function ( key, value ) { $( '[data-log-count="' + key + '"]' ).text( Number( value ).toLocaleString() ); } ); }
 	}
 
 	function setLogLoading( loading ) {
-		var $results = $( '#tves-log-results' );
-		$results.toggleClass( 'is-loading', loading ).attr( 'aria-busy', loading ? 'true' : 'false' );
+		$( '#tves-log-results' ).toggleClass( 'is-loading', loading ).attr( 'aria-busy', loading ? 'true' : 'false' );
 		$( '#tves-refresh-logs' ).prop( 'disabled', loading ).toggleClass( 'is-loading', loading );
-		$( '#tves-clear-logs' ).prop( 'disabled', loading );
-		$( '.tves-log-filter :input' ).prop( 'disabled', loading );
+		$( '#tves-clear-logs, .tves-log-filter :input' ).prop( 'disabled', loading );
 	}
 
-	function showLogError( message ) {
-		$( '#tves-log-error' ).text( message ).prop( 'hidden', false );
-	}
-
-	function showLogNotice( message ) {
-		$( '#tves-log-notice' ).text( message ).prop( 'hidden', false );
-	}
+	function showLogError( message ) { $( '#tves-log-error' ).text( message ).prop( 'hidden', false ); }
+	function showLogNotice( message ) { $( '#tves-log-notice' ).text( message ).prop( 'hidden', false ); }
 
 	function loadLogs( status, paged, options ) {
 		var $results = $( '#tves-log-results' );
 		options = options || {};
-		if ( ! $results.length || 'undefined' === typeof tvesAdmin ) {
-			return;
-		}
-
-		status = status || '';
-		paged = Math.max( 1, parseInt( paged, 10 ) || 1 );
-		if ( logRequest ) {
-			logRequest.abort();
-		}
-
-		$( '#tves-log-error' ).prop( 'hidden', true ).empty();
-		$( '#tves-log-notice' ).prop( 'hidden', true ).empty();
-		setLogLoading( true );
-		logRequest = $.ajax( {
-			url: tvesAdmin.ajaxUrl,
-			method: 'POST',
-			dataType: 'json',
-			data: {
-				action: 'tves_load_logs',
-				nonce: tvesAdmin.logsNonce,
-				status: status,
-				paged: paged
-			}
-		} ).done( function ( response ) {
-			if ( ! response.success || ! response.data || 'undefined' === typeof response.data.html ) {
-				showLogError( tvesAdmin.logsError );
-				return;
-			}
-
-			$( '#tves-log-results-content' ).html( response.data.html );
-			updateLogControls( response.data );
-			if ( options.history ) {
-				setLogHistory( response.data.status, response.data.paged );
-			}
-			if ( options.scroll && $results.length ) {
-				$results.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
-			}
-		} ).fail( function ( xhr, textStatus ) {
-			if ( 'abort' !== textStatus ) {
-				showLogError( tvesAdmin.logsError );
-			}
-		} ).always( function ( xhr, textStatus ) {
-			if ( 'abort' !== textStatus ) {
-				setLogLoading( false );
-			}
-			logRequest = null;
-		} );
+		if ( ! $results.length ) { return; }
+		status = status || ''; paged = Math.max( 1, parseInt( paged, 10 ) || 1 );
+		if ( logRequest ) { logRequest.abort(); }
+		$( '#tves-log-error, #tves-log-notice' ).prop( 'hidden', true ).empty(); setLogLoading( true );
+		logRequest = $.post( tvesAdmin.ajaxUrl, { action: 'tves_load_logs', nonce: tvesAdmin.logsNonce, status: status, paged: paged }, null, 'json' ).done( function ( response ) {
+			if ( ! response.success || ! response.data || 'undefined' === typeof response.data.html ) { showLogError( tvesAdmin.logsError ); return; }
+			$( '#tves-log-results-content' ).html( response.data.html ); updateLogControls( response.data );
+			if ( options.history ) { setLogHistory( response.data.status, response.data.paged ); }
+			if ( options.scroll ) { $results.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'start' } ); }
+		} ).fail( function ( xhr, textStatus ) { if ( 'abort' !== textStatus ) { showLogError( tvesAdmin.logsError ); } } ).always( function () { setLogLoading( false ); logRequest = null; } );
 	}
 
 	$( function () {
-		toggleTemplate();
-		$( '#tves-title-format' ).on( 'change', toggleTemplate );
-		$( '.tves-copy-button' ).on( 'click', function () { copyEndpoint( this ); } );
-		$( '#tves-category-search' ).on( 'input', function () { filterCategories( this.value ); } );
-		observeSettingsSections();
-		$( '.tves-manual-sync' ).on( 'submit', function () {
-			return window.confirm( tvesAdmin.confirmSync );
-		} );
-
-		if ( $( '#tves-sync-card' ).length ) {
-			pollSyncStatus();
-		}
-
-		$( '.tves-log-summary' ).on( 'click', '.tves-log-stat', function ( event ) {
-			event.preventDefault();
-			loadLogs( String( $( this ).data( 'status' ) || '' ), 1, { history: true } );
-		} );
-
-		$( '.tves-log-filter' ).on( 'submit', function ( event ) {
-			event.preventDefault();
-			loadLogs( String( $( '#tves-status-filter' ).val() || '' ), 1, { history: true } );
-		} );
-
-		$( '#tves-status-filter' ).on( 'change', function () {
-			loadLogs( String( $( this ).val() || '' ), 1, { history: true } );
-		} );
-
-		$( '#tves-refresh-logs' ).on( 'click', function () {
-			var $results = $( '#tves-log-results' );
-			loadLogs( String( $results.attr( 'data-status' ) || '' ), $results.attr( 'data-paged' ) || 1, { history: false } );
-		} );
-
-		$( '#tves-clear-logs' ).on( 'click', function () {
-			var $results = $( '#tves-log-results' );
-			var status = String( $results.attr( 'data-status' ) || '' );
-			if ( ! window.confirm( tvesAdmin.confirmClearLogs ) ) {
-				return;
-			}
-
-			$( '#tves-log-error' ).prop( 'hidden', true ).empty();
-			$( '#tves-log-notice' ).prop( 'hidden', true ).empty();
+		initializeTab( String( $( '#tves-dashboard-content' ).data( 'tab' ) || 'overview' ) );
+		$( document ).on( 'click', '.tves-dashboard-tabs a', function ( event ) { event.preventDefault(); loadDashboardTab( String( $( this ).data( 'tab' ) ), { history: true } ); } );
+		$( document ).on( 'change', '#tves-title-format', toggleTemplate );
+		$( document ).on( 'click', '.tves-copy-button', function () { copyEndpoint( this ); } );
+		$( document ).on( 'input', '#tves-category-search', function () { filterCategories( this.value ); } );
+		$( document ).on( 'submit', '.tves-manual-sync', function () { return window.confirm( tvesAdmin.confirmSync ); } );
+		$( document ).on( 'click', '.tves-log-stat', function ( event ) { event.preventDefault(); loadLogs( String( $( this ).data( 'status' ) || '' ), 1, { history: true } ); } );
+		$( document ).on( 'submit', '.tves-log-filter', function ( event ) { event.preventDefault(); loadLogs( String( $( '#tves-status-filter' ).val() || '' ), 1, { history: true } ); } );
+		$( document ).on( 'change', '#tves-status-filter', function () { loadLogs( String( this.value || '' ), 1, { history: true } ); } );
+		$( document ).on( 'click', '#tves-refresh-logs', function () { var $r = $( '#tves-log-results' ); loadLogs( String( $r.attr( 'data-status' ) || '' ), $r.attr( 'data-paged' ) || 1, {} ); } );
+		$( document ).on( 'click', '#tves-clear-logs', function () {
+			var status = String( $( '#tves-log-results' ).attr( 'data-status' ) || '' );
+			if ( ! window.confirm( tvesAdmin.confirmClearLogs ) ) { return; }
 			setLogLoading( true );
-			$.ajax( {
-				url: tvesAdmin.ajaxUrl,
-				method: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'tves_clear_logs',
-					nonce: tvesAdmin.clearLogsNonce,
-					status: status
-				}
-			} ).done( function ( response ) {
-				if ( ! response.success || ! response.data || 'undefined' === typeof response.data.html ) {
-					showLogError( tvesAdmin.clearLogsError );
-					return;
-				}
-
-				$( '#tves-log-results-content' ).html( response.data.html );
-				updateLogControls( response.data );
-				setLogHistory( response.data.status, 1 );
-				showLogNotice( response.data.message );
-			} ).fail( function () {
-				showLogError( tvesAdmin.clearLogsError );
-			} ).always( function () {
-				setLogLoading( false );
-			} );
+			$.post( tvesAdmin.ajaxUrl, { action: 'tves_clear_logs', nonce: tvesAdmin.clearLogsNonce, status: status }, null, 'json' ).done( function ( response ) {
+				if ( ! response.success || ! response.data ) { showLogError( tvesAdmin.clearLogsError ); return; }
+				$( '#tves-log-results-content' ).html( response.data.html ); updateLogControls( response.data ); setLogHistory( response.data.status, 1 ); showLogNotice( response.data.message );
+			} ).fail( function () { showLogError( tvesAdmin.clearLogsError ); } ).always( function () { setLogLoading( false ); } );
 		} );
-
-		$( '#tves-log-results' ).on( 'click', '.tves-log-pagination a', function ( event ) {
-			var url;
-			event.preventDefault();
-			url = new window.URL( this.href, window.location.href );
-			loadLogs( String( $( '#tves-log-results' ).attr( 'data-status' ) || '' ), url.searchParams.get( 'paged' ) || 1, { history: true, scroll: true } );
-		} );
-
+		$( document ).on( 'click', '.tves-log-pagination a', function ( event ) { event.preventDefault(); var url = new window.URL( this.href, window.location.href ); loadLogs( String( $( '#tves-log-results' ).attr( 'data-status' ) || '' ), url.searchParams.get( 'paged' ) || 1, { history: true, scroll: true } ); } );
 		$( window ).on( 'popstate', function () {
-			var state;
-			if ( ! $( '#tves-log-results' ).length ) {
-				return;
-			}
-			state = getLogUrlState();
-			loadLogs( state.status, state.paged, { history: false } );
+			var url = new window.URL( window.location.href ); var tab = url.searchParams.get( 'tab' ) || 'overview';
+			if ( String( $( '#tves-dashboard-content' ).data( 'tab' ) ) !== tab ) { loadDashboardTab( tab, {} ); }
+			else if ( 'logs' === tab ) { loadLogs( url.searchParams.get( 'status' ) || '', url.searchParams.get( 'paged' ) || 1, {} ); }
 		} );
 	} );
 }( jQuery ) );

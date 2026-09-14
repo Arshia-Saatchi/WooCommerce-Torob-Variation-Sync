@@ -25,6 +25,7 @@ class TVES_Admin_Settings {
 		add_action( 'wp_ajax_tves_sync_status', array( $this, 'ajax_sync_status' ) );
 		add_action( 'wp_ajax_tves_load_logs', array( $this, 'ajax_load_logs' ) );
 		add_action( 'wp_ajax_tves_clear_logs', array( $this, 'ajax_clear_logs' ) );
+		add_action( 'wp_ajax_tves_load_dashboard_tab', array( $this, 'ajax_load_dashboard_tab' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( TVES_FILE ), array( $this, 'action_links' ) );
 	}
 
@@ -99,18 +100,21 @@ class TVES_Admin_Settings {
 	}
 
 	public function add_menu_pages(): void {
-		add_submenu_page(
-			'woocommerce',
-			__( 'اتصال محصولات به ترب', 'torob-variable-exporter' ),
-			__( 'اتصال محصولات به ترب', 'torob-variable-exporter' ),
+		add_menu_page(
+			__( 'رسا | مدیریت اتصال ترب', 'torob-variable-exporter' ),
+			__( 'رسا', 'torob-variable-exporter' ),
 			'manage_woocommerce',
 			'tves-settings',
-			array( $this, 'render_settings_page' )
+			array( $this, 'render_settings_page' ),
+			'dashicons-randomize',
+			58
 		);
+
+		// Keep the old URL working without adding a second sidebar item.
 		add_submenu_page(
-			'woocommerce',
-			__( 'گزارش‌های ترب', 'torob-variable-exporter' ),
-			__( 'گزارش‌های ترب', 'torob-variable-exporter' ),
+			null,
+			__( 'گزارش‌های رسا', 'torob-variable-exporter' ),
+			__( 'گزارش‌های رسا', 'torob-variable-exporter' ),
 			'manage_woocommerce',
 			'tves-logs',
 			array( $this, 'render_logs_page' )
@@ -138,9 +142,11 @@ class TVES_Admin_Settings {
 		}
 
 		$input          = is_array( $input ) ? $input : array();
+		$current        = (array) get_option( 'tves_settings', array() );
+		$section        = sanitize_key( $input['settings_section'] ?? '' );
 		$title_formats  = array( 'parent_attributes', 'parent', 'custom' );
 		$sync_intervals = array( 'manual', 'hourly', 'six_hours', 'daily' );
-		$output         = array(
+		$sanitized_output = array(
 			'enabled'              => ! empty( $input['enabled'] ) ? 'yes' : 'no',
 			'title_format'         => in_array( $input['title_format'] ?? '', $title_formats, true ) ? $input['title_format'] : 'parent_attributes',
 			'title_template'       => sanitize_text_field( $input['title_template'] ?? '{parent} - {attributes}' ),
@@ -153,6 +159,14 @@ class TVES_Admin_Settings {
 			'api_token'            => sanitize_text_field( $input['api_token'] ?? '' ),
 			'v3_enabled'           => ! empty( $input['v3_enabled'] ) ? 'yes' : 'no',
 		);
+		if ( 'output' === $section ) {
+			$output = array_merge( $current, array_intersect_key( $sanitized_output, array_flip( array( 'enabled', 'title_format', 'title_template', 'title_attributes', 'export_attributes', 'sync_interval', 'api_token', 'v3_enabled' ) ) ) );
+		} elseif ( 'exclusions' === $section ) {
+			$output = array_merge( $current, array_intersect_key( $sanitized_output, array_flip( array( 'excluded_products', 'excluded_variations', 'excluded_categories' ) ) ) );
+		} else {
+			$output = $sanitized_output;
+		}
+		$output['sync_interval'] = $output['sync_interval'] ?? 'manual';
 
 		TVES_Sync_Manager::reschedule( $output['sync_interval'] );
 		TVES_Feed_Generator::bump_cache_generation();
@@ -164,16 +178,9 @@ class TVES_Admin_Settings {
 			wp_die( esc_html__( 'شما اجازه دسترسی به این صفحه را ندارید.', 'torob-variable-exporter' ) );
 		}
 
-		$settings   = (array) get_option( 'tves_settings', array() );
-		$attributes = self::get_detected_attributes();
-		$status     = TVES_Sync_Manager::get_status();
-		$feed_url   = rest_url( 'torob/v1/products' );
-		$v3_feed_url = rest_url( 'torob/v3/products' );
-		$v3_stats    = TVES_Torob_V3_Catalog::get_stats();
-		$v3_audiences = TVES_Torob_JWT_Validator::accepted_audiences();
-		$v3_last_access = (int) get_option( 'tves_v3_last_access', 0 );
-		$v3_crypto_ready = function_exists( 'sodium_crypto_sign_verify_detached' );
-		$categories = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false ) );
+		$active_tab = $this->get_dashboard_tab( sanitize_key( wp_unslash( $_GET['tab'] ?? 'overview' ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$context    = $this->get_dashboard_context( $active_tab );
+		extract( $context, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 		include TVES_PATH . 'admin/settings-page.php';
 	}
 
@@ -182,18 +189,66 @@ class TVES_Admin_Settings {
 			wp_die( esc_html__( 'شما اجازه دسترسی به این صفحه را ندارید.', 'torob-variable-exporter' ) );
 		}
 
-		$page       = max( 1, absint( $_GET['paged'] ?? 1 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$status     = sanitize_key( wp_unslash( $_GET['status'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$statuses   = self::get_log_statuses();
-		$status     = array_key_exists( $status, $statuses ) ? $status : '';
-		$log_result = TVES_Logger::get_logs( $page, 30, $status );
-		$total_pages = max( 1, (int) ceil( $log_result['total'] / 30 ) );
-		if ( $page > $total_pages ) {
-			$page       = $total_pages;
-			$log_result = TVES_Logger::get_logs( $page, 30, $status );
+		wp_safe_redirect( admin_url( 'admin.php?page=tves-settings&tab=logs' ) );
+		exit;
+	}
+
+	/** @return array<string, mixed> */
+	private function get_dashboard_context( string $tab ): array {
+		$context = array( 'active_tab' => $tab );
+		if ( in_array( $tab, array( 'overview', 'output', 'exclusions' ), true ) ) {
+			$context['settings'] = (array) get_option( 'tves_settings', array() );
 		}
-		$counts     = TVES_Logger::get_status_counts();
-		include TVES_PATH . 'admin/logs-page.php';
+		if ( 'overview' === $tab ) {
+			$context += array(
+				'status'          => TVES_Sync_Manager::get_status(),
+				'feed_url'        => rest_url( 'torob/v1/products' ),
+				'v3_feed_url'     => rest_url( 'torob/v3/products' ),
+				'v3_stats'        => TVES_Torob_V3_Catalog::get_stats(),
+				'v3_audiences'    => TVES_Torob_JWT_Validator::accepted_audiences(),
+				'v3_last_access'  => (int) get_option( 'tves_v3_last_access', 0 ),
+				'v3_crypto_ready' => function_exists( 'sodium_crypto_sign_verify_detached' ),
+			);
+		} elseif ( 'output' === $tab ) {
+			$context['attributes'] = self::get_detected_attributes();
+		} elseif ( 'exclusions' === $tab ) {
+			$context['categories'] = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false ) );
+		} elseif ( 'logs' === $tab ) {
+			$page       = max( 1, absint( $_REQUEST['paged'] ?? 1 ) );
+			$statuses   = self::get_log_statuses();
+			$status     = sanitize_key( wp_unslash( $_REQUEST['status'] ?? '' ) );
+			$status     = array_key_exists( $status, $statuses ) ? $status : '';
+			$log_result = TVES_Logger::get_logs( $page, 30, $status );
+			$total_pages = max( 1, (int) ceil( $log_result['total'] / 30 ) );
+			if ( $page > $total_pages ) {
+				$page       = $total_pages;
+				$log_result = TVES_Logger::get_logs( $page, 30, $status );
+			}
+			$context += compact( 'page', 'status', 'statuses', 'log_result', 'total_pages' );
+			$context['counts'] = TVES_Logger::get_status_counts();
+		}
+		return $context;
+	}
+
+	private function get_dashboard_tab( string $tab ): string {
+		return in_array( $tab, array( 'overview', 'output', 'exclusions', 'logs' ), true ) ? $tab : 'overview';
+	}
+
+	private function render_dashboard_tab( string $tab ): string {
+		$context = $this->get_dashboard_context( $tab );
+		extract( $context, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+		ob_start();
+		include TVES_PATH . 'admin/tabs/' . $tab . '.php';
+		return (string) ob_get_clean();
+	}
+
+	public function ajax_load_dashboard_tab(): void {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'شما اجازه انجام این عملیات را ندارید.', 'torob-variable-exporter' ) ), 403 );
+		}
+		check_ajax_referer( 'tves_load_dashboard_tab', 'nonce' );
+		$tab = $this->get_dashboard_tab( sanitize_key( wp_unslash( $_POST['tab'] ?? 'overview' ) ) );
+		wp_send_json_success( array( 'tab' => $tab, 'html' => $this->render_dashboard_tab( $tab ) ) );
 	}
 
 	/**
@@ -206,7 +261,7 @@ class TVES_Admin_Settings {
 		check_admin_referer( 'tves_manual_sync' );
 		$result = $this->sync_manager->start_sync( true );
 		$notice = is_wp_error( $result ) ? 'sync-error' : 'sync-started';
-		wp_safe_redirect( add_query_arg( 'tves_notice', $notice, admin_url( 'admin.php?page=tves-settings' ) ) );
+		wp_safe_redirect( add_query_arg( 'tves_notice', $notice, admin_url( 'admin.php?page=tves-settings&tab=overview' ) ) );
 		exit;
 	}
 
@@ -410,7 +465,7 @@ class TVES_Admin_Settings {
 	}
 
 	public function enqueue_assets( string $hook_suffix ): void {
-		if ( ! in_array( $hook_suffix, array( 'woocommerce_page_tves-settings', 'woocommerce_page_tves-logs' ), true ) ) {
+		if ( ! in_array( $hook_suffix, array( 'toplevel_page_tves-settings', 'admin_page_tves-logs' ), true ) ) {
 			return;
 		}
 		wp_enqueue_style( 'tves-admin', TVES_URL . 'assets/css/admin.css', array(), TVES_VERSION );
@@ -423,6 +478,7 @@ class TVES_Admin_Settings {
 				'syncNonce'        => wp_create_nonce( 'tves_sync_status' ),
 				'logsNonce'        => wp_create_nonce( 'tves_load_logs' ),
 				'clearLogsNonce'   => wp_create_nonce( 'tves_clear_logs' ),
+				'dashboardNonce'   => wp_create_nonce( 'tves_load_dashboard_tab' ),
 				'pollInterval'     => 3000,
 				'syncLive'         => __( 'در حال پردازش', 'torob-variable-exporter' ),
 				'syncReady'        => __( 'آماده', 'torob-variable-exporter' ),
@@ -432,10 +488,12 @@ class TVES_Admin_Settings {
 				'logsError'        => __( 'تازه‌سازی گزارش‌ها انجام نشد؛ جدول زیر آخرین اطلاعات بارگذاری‌شده است. دوباره تلاش کنید.', 'torob-variable-exporter' ),
 				'clearLogsError'   => __( 'پاک‌کردن گزارش‌های ترب انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ),
 				'confirmClearLogs' => __( 'همه گزارش‌های ترب برای همیشه پاک شوند؟ اگر به نسخه پشتیبان نیاز دارید، ابتدا فایل گزارش را دریافت کنید.', 'torob-variable-exporter' ),
+				'loadingTab'       => __( 'در حال آماده‌سازی این بخش…', 'torob-variable-exporter' ),
+				'tabError'         => __( 'بارگذاری این بخش انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ),
 			)
 		);
 
-		if ( 'woocommerce_page_tves-settings' === $hook_suffix ) {
+		if ( 'toplevel_page_tves-settings' === $hook_suffix ) {
 			wp_enqueue_script( 'wc-enhanced-select' );
 			wp_enqueue_style( 'woocommerce_admin_styles' );
 		}

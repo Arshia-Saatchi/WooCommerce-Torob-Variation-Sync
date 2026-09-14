@@ -1,9 +1,9 @@
-# Torob Variable Product Exporter
+# رسا (RESA) — همگام‌سازی ووکامرس با ترب
 
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.2<br>
+**نسخه:** 2.0.0-beta.3<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -12,7 +12,7 @@
 
 ### معرفی
 
-Torob Variable Product Exporter یک افزونه مستقل برای WordPress و WooCommerce است که محصولات ساده و Variationهای محصولات متغیر را به آیتم‌های مستقل تبدیل می‌کند. این افزونه هیچ تغییری در هسته وردپرس، ووکامرس، محصولات، سفارش‌ها یا افزونه‌های دیگر ترب ایجاد نمی‌کند.
+رسا (RESA) یک افزونه مستقل برای WordPress و WooCommerce است که محصولات ساده و Variationهای محصولات متغیر را به آیتم‌های مستقل تبدیل می‌کند. این افزونه هیچ تغییری در هسته وردپرس، ووکامرس، محصولات، سفارش‌ها یا افزونه‌های دیگر ترب ایجاد نمی‌کند.
 
 برای هر Variation اطلاعاتی مانند شناسه مستقل، شناسه محصول مادر، عنوان، ویژگی‌ها، SKU، قیمت، موجودی، تصویر و لینک مستقیم همان Variation تولید می‌شود.
 
@@ -38,6 +38,8 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 - نمایش زنده پیشرفت همگام‌سازی با AJAX
 - ادامه خودکار Batchهای Sync از طریق AJAX در صورت اجرا نشدن WP-Cron
 - صفحه گزارش با فیلتر، تازه‌سازی و صفحه‌بندی کاملاً AJAX
+- داشبورد یکپارچه رسا با چهار تب AJAX برای نمای کلی، تنظیم خروجی، حذف از ترب و گزارش‌ها
+- منوی مستقل «رسا» در پیشخوان، پایین بخش بازاریابی و خارج از زیرمنوی ووکامرس
 - خروجی UTF-8 با فرمت CSV و TXT
 - پاک‌کردن تمام لاگ‌ها به‌صورت امن و AJAX همراه با تأیید کاربر
 - حذف خودکار لاگ‌های قدیمی‌تر از ۳۰ روز و نگهداری حداکثر ۲۰٬۰۰۰ رکورد اخیر، مستقل از اجرای Sync
@@ -215,6 +217,15 @@ WooCommerce-Torob-Variation-Sync/
 
 ### تاریخچه نسخه‌ها
 
+#### 2.0.0-beta.3
+
+- معرفی نام تجاری «رسا | RESA» در مشخصات افزونه، داشبورد و منوی پیشخوان
+- تبدیل صفحات پراکنده به یک داشبورد واحد با تب‌های AJAX و حفظ مسیر قدیمی گزارش‌ها
+- انتقال بازسازی کاتالوگ به نمای کلی و جلوگیری از شلوغی صفحه تنظیمات
+- بازطراحی نوار فیلتر، خروجی و پاک‌سازی گزارش‌ها با گروه‌بندی بصری روشن‌تر
+- اصلاح تراز عدد وضعیت کاتالوگ و نمایش پایدارتر اعداد در به‌روزرسانی زنده
+- جداسازی ذخیره تنظیم خروجی و موارد حذف‌شده، بدون بازنویسی ناخواسته بخش دیگر
+
 #### 2.0.0-beta.2
 
 - فارسی‌سازی کامل صفحات تنظیمات و گزارش‌های ترب با متن‌های ساده و قابل‌فهم برای مدیر فروشگاه
@@ -330,7 +341,7 @@ WooCommerce-Torob-Variation-Sync/
 
 ### Overview
 
-Torob Variable Product Exporter is an independent WordPress and WooCommerce extension that exports simple products and converts every variable-product variation into a standalone feed item. It does not modify WordPress core, WooCommerce core, product/order data, or another Torob plugin.
+RESA is an independent WordPress and WooCommerce extension that exports simple products and converts every variable-product variation into a standalone feed item. It does not modify WordPress core, WooCommerce core, product/order data, or another Torob plugin.
 
 Each variation can include its own stable ID, parent ID, title, selected attributes, SKU, prices, availability, stock quantity, image, and direct variation URL.
 
@@ -484,6 +495,15 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.3
+
+- Introduces the RESA brand across plugin metadata, the dashboard, and the WordPress admin menu.
+- Consolidates the former screens into one dashboard with AJAX tabs while preserving the legacy logs URL.
+- Moves catalog rebuilding into Overview and reduces settings-page clutter.
+- Redesigns log filtering, export, refresh, and cleanup as clearer command groups.
+- Fixes catalog-count alignment and stabilizes live numeric updates.
+- Saves output settings and exclusions independently so one tab cannot overwrite the other.
 
 #### 2.0.0-beta.2
 

@@ -1,17 +1,17 @@
-=== همگام‌سازی محصولات ترب برای ووکامرس ===
+=== رسا | RESA — همگام‌سازی ووکامرس با ترب ===
 Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.2
+Stable tag: 2.0.0-beta.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-افزونه مستقل ووکامرس برای تبدیل Variationها به محصولات مستقل، تولید فید صفحه‌بندی‌شده و مدیریت همگام‌سازی ترب.
+رسا، افزونه مستقل ووکامرس برای تبدیل Variationها به محصولات مستقل، تولید فید صفحه‌بندی‌شده و مدیریت همگام‌سازی ترب است.
 
 == توضیحات فارسی ==
 
-Torob Variable Product Exporter محصولات ساده و Variationهای ووکامرس را به آیتم‌های مستقل فید تبدیل می‌کند. افزونه هیچ تغییری در هسته وردپرس، ووکامرس، سفارش‌ها یا محصولات ایجاد نمی‌کند.
+رسا محصولات ساده و Variationهای ووکامرس را به آیتم‌های مستقل فید تبدیل می‌کند. افزونه هیچ تغییری در هسته وردپرس، ووکامرس، سفارش‌ها یا محصولات ایجاد نمی‌کند.
 
 قابلیت‌ها:
 
@@ -68,7 +68,7 @@ API رسمی v3 در آدرس `/wp-json/torob/v3/products` قرار دارد. ا
 
 == English Description ==
 
-Torob Variable Product Exporter is an independent WooCommerce extension that exports simple products and converts every variable-product variation into a standalone feed item. It never modifies WordPress core, WooCommerce core, products, or orders.
+RESA is an independent WooCommerce extension that exports simple products and converts every variable-product variation into a standalone feed item. It never modifies WordPress core, WooCommerce core, products, or orders.
 
 Features:
 
@@ -127,6 +127,13 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.3 =
+* Introduces the RESA brand in plugin metadata, dashboard, and the standalone WordPress admin menu.
+* Combines overview, output, exclusions, and logs into one AJAX-tabbed dashboard.
+* Moves catalog rebuilding into Overview and keeps the former logs URL compatible.
+* Redesigns the log command bar and fixes catalog-count alignment.
+* Saves output settings and exclusions independently to prevent cross-tab overwrites.
 
 = 2.0.0-beta.2 =
 * Fully localizes the settings and activity-log screens into clear Persian.
