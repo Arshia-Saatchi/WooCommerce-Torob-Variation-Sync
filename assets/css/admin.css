@@ -14,6 +14,7 @@
 	--tves-surface: #fff;
 	box-sizing: border-box;
 	color: var(--tves-ink);
+	direction: rtl;
 	font-family: Vazirmatn, IRANSansX, Dana, Tahoma, system-ui, sans-serif;
 	max-width: 1360px;
 	padding-block-end: 44px;
@@ -55,8 +56,8 @@
 .tves-wrap .tves-button-quiet { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .22); color: #fff; }
 .tves-wrap .tves-button-quiet:hover, .tves-wrap .tves-button-quiet:focus { background: #fff; border-color: #fff; color: var(--tves-ink); }
 .tves-button-quiet .dashicons { font-size: 17px; height: 17px; width: 17px; }
-.tves-version-badge { align-items: center; background: #fff; border-radius: 8px; color: var(--tves-ink); direction: ltr; display: inline-flex; font-size: 11px; font-weight: 700; gap: 6px; padding: 7px 9px; }
-.tves-version-badge span { color: var(--tves-blue); }
+.tves-version-badge { align-items: center; background: #fff; border-radius: 8px; color: var(--tves-ink); display: inline-flex; font-size: 11px; font-weight: 700; gap: 6px; padding: 7px 9px; }
+.tves-version-badge span { color: var(--tves-blue); direction: ltr; }
 
 .tves-section-nav { align-items: center; background: rgba(255, 255, 255, .92); border: 1px solid var(--tves-line); border-radius: 12px; display: flex; gap: 4px; margin: 0 0 18px; overflow-x: auto; padding: 5px; position: sticky; top: 42px; z-index: 30; }
 .tves-section-nav a { border-radius: 7px; color: var(--tves-muted); font-weight: 650; padding: 8px 14px; text-decoration: none; white-space: nowrap; }
@@ -86,6 +87,7 @@
 .tves-endpoint { align-items: center; background: var(--tves-ink); border: 1px solid #334360; border-radius: 10px; display: flex; gap: 10px; margin-top: 18px; padding: 7px; }
 .tves-endpoint code { background: transparent; color: #dbe6ff; flex: 1 1 auto; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; overflow-wrap: anywhere; padding: 7px 9px; text-align: left; }
 .tves-endpoint .button { background: #fff; border: 0; color: var(--tves-ink); flex: 0 0 auto; min-height: 34px; }
+.tves-endpoint .button { direction: rtl; }
 .tves-endpoint .dashicons { font-size: 16px; height: 16px; width: 16px; }
 .tves-fact-list, .tves-monitor-facts { display: grid; gap: 0; margin: 17px 0 0; }
 .tves-fact-list div, .tves-monitor-facts div { align-items: center; border-top: 1px solid #edf0f5; display: flex; gap: 20px; justify-content: space-between; padding: 10px 0; }
@@ -197,6 +199,7 @@
 .tves-toolbar-section, .tves-toolbar-group { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
 .tves-toolbar-section { gap: 10px; }
 .tves-toolbar-section-secondary { margin-inline-start: auto; }
+.tves-toolbar-kicker { color: var(--tves-muted); font-size: 12px; font-weight: 750; padding-inline-end: 3px; white-space: nowrap; }
 .tves-toolbar-group label { color: var(--tves-ink-soft); font-weight: 700; }
 .tves-toolbar-group select { border-color: #cbd5e3; border-radius: 8px; min-height: 38px; min-width: 145px; }
 .tves-toolbar-help { color: var(--tves-muted); flex-basis: 100%; margin: 0; padding-top: 2px; }

@@ -1,9 +1,9 @@
-=== Torob Variable Product Exporter ===
+=== همگام‌سازی محصولات ترب برای ووکامرس ===
 Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.1
+Stable tag: 2.0.0-beta.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,14 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.2 =
+* Fully localizes the settings and activity-log screens into clear Persian.
+* Adds practical guidance for technical settings, variation titles, attributes, scheduling, and exclusions.
+* Localizes the plugin title and WooCommerce menu entries.
+* Shows common old and new log messages in Persian while preserving stable technical database values.
+* Localizes CSV/TXT report headers, statuses, and known messages.
+* Clarifies AJAX refresh failures and improves RTL details in controls and toolbars.
 
 = 2.0.0-beta.1 =
 * Completely redesigns settings and logs around a Torob operations-console identity.

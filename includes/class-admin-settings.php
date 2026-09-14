@@ -45,12 +45,12 @@ class TVES_Admin_Settings {
 	 */
 	public static function get_log_statuses(): array {
 		return array(
-			''          => __( 'All statuses', 'torob-variable-exporter' ),
-			'success'   => __( 'Success', 'torob-variable-exporter' ),
-			'warning'   => __( 'Warning', 'torob-variable-exporter' ),
-			'error'     => __( 'Error', 'torob-variable-exporter' ),
-			'api_error' => __( 'API error', 'torob-variable-exporter' ),
-			'invalid'   => __( 'Invalid', 'torob-variable-exporter' ),
+			''          => __( 'همه وضعیت‌ها', 'torob-variable-exporter' ),
+			'success'   => __( 'موفق', 'torob-variable-exporter' ),
+			'warning'   => __( 'هشدار', 'torob-variable-exporter' ),
+			'error'     => __( 'خطا', 'torob-variable-exporter' ),
+			'api_error' => __( 'خطای ارتباط API', 'torob-variable-exporter' ),
+			'invalid'   => __( 'محصول نامعتبر', 'torob-variable-exporter' ),
 		);
 	}
 
@@ -101,16 +101,16 @@ class TVES_Admin_Settings {
 	public function add_menu_pages(): void {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Torob Variable Sync', 'torob-variable-exporter' ),
-			__( 'Torob Variable Sync', 'torob-variable-exporter' ),
+			__( 'اتصال محصولات به ترب', 'torob-variable-exporter' ),
+			__( 'اتصال محصولات به ترب', 'torob-variable-exporter' ),
 			'manage_woocommerce',
 			'tves-settings',
 			array( $this, 'render_settings_page' )
 		);
 		add_submenu_page(
 			'woocommerce',
-			__( 'Torob Logs', 'torob-variable-exporter' ),
-			__( 'Torob Logs', 'torob-variable-exporter' ),
+			__( 'گزارش‌های ترب', 'torob-variable-exporter' ),
+			__( 'گزارش‌های ترب', 'torob-variable-exporter' ),
 			'manage_woocommerce',
 			'tves-logs',
 			array( $this, 'render_logs_page' )
@@ -161,7 +161,7 @@ class TVES_Admin_Settings {
 
 	public function render_settings_page(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'torob-variable-exporter' ) );
+			wp_die( esc_html__( 'شما اجازه دسترسی به این صفحه را ندارید.', 'torob-variable-exporter' ) );
 		}
 
 		$settings   = (array) get_option( 'tves_settings', array() );
@@ -179,7 +179,7 @@ class TVES_Admin_Settings {
 
 	public function render_logs_page(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'torob-variable-exporter' ) );
+			wp_die( esc_html__( 'شما اجازه دسترسی به این صفحه را ندارید.', 'torob-variable-exporter' ) );
 		}
 
 		$page       = max( 1, absint( $_GET['paged'] ?? 1 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -201,7 +201,7 @@ class TVES_Admin_Settings {
 	 */
 	public function handle_manual_sync(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to synchronize the feed.', 'torob-variable-exporter' ) );
+			wp_die( esc_html__( 'شما اجازه بازسازی کاتالوگ ترب را ندارید.', 'torob-variable-exporter' ) );
 		}
 		check_admin_referer( 'tves_manual_sync' );
 		$result = $this->sync_manager->start_sync( true );
@@ -215,7 +215,7 @@ class TVES_Admin_Settings {
 	 */
 	public function handle_export_logs(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to export Torob logs.', 'torob-variable-exporter' ) );
+			wp_die( esc_html__( 'شما اجازه دریافت فایل گزارش ترب را ندارید.', 'torob-variable-exporter' ) );
 		}
 		check_admin_referer( 'tves_export_logs' );
 
@@ -235,10 +235,11 @@ class TVES_Admin_Settings {
 
 		$output = fopen( 'php://output', 'wb' );
 		if ( false === $output ) {
-			wp_die( esc_html__( 'The export stream could not be opened.', 'torob-variable-exporter' ) );
+			wp_die( esc_html__( 'ساخت فایل گزارش انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ) );
 		}
 
-		$columns = array( 'Date', 'Product ID', 'Product', 'Variation ID', 'Status', 'Message', 'Context' );
+		$columns       = array( 'تاریخ و ساعت', 'شناسه محصول', 'نام محصول', 'شناسه انتخاب', 'وضعیت', 'شرح رویداد', 'جزئیات فنی' );
+		$status_labels = self::get_log_statuses();
 		if ( 'csv' === $format ) {
 			fwrite( $output, "\xEF\xBB\xBF" );
 			fputcsv( $output, $columns, ',', '"', '' );
@@ -261,8 +262,8 @@ class TVES_Admin_Settings {
 					(string) $log->product_id,
 					$product_names[ $product_id ] ?? '',
 					(string) $log->variation_id,
-					(string) $log->status,
-					(string) $log->message,
+					(string) ( $status_labels[ $log->status ] ?? $log->status ),
+					TVES_Logger::display_message( (string) $log->message ),
 					(string) $log->context,
 				);
 				$row = array_map( array( __CLASS__, 'sanitize_export_cell' ), $row );
@@ -284,7 +285,7 @@ class TVES_Admin_Settings {
 	 */
 	public function ajax_sync_status(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'torob-variable-exporter' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'شما اجازه انجام این عملیات را ندارید.', 'torob-variable-exporter' ) ), 403 );
 		}
 		check_ajax_referer( 'tves_sync_status', 'nonce' );
 		$this->sync_manager->maybe_process_due_batch();
@@ -295,10 +296,10 @@ class TVES_Admin_Settings {
 		wp_send_json_success(
 			array(
 				'running'        => $status['running'],
-				'status_label'   => $status['running'] ? __( 'running', 'torob-variable-exporter' ) : __( 'idle', 'torob-variable-exporter' ),
-				'last_sync'      => $status['last'] ? wp_date( 'Y-m-d H:i', $status['last'] ) : __( 'Never', 'torob-variable-exporter' ),
-				'next_sync'      => $status['next'] ? wp_date( 'Y-m-d H:i', $status['next'] ) : __( 'Manual only', 'torob-variable-exporter' ),
-				'last_activity'  => $status['last_activity'] ? wp_date( 'Y-m-d H:i:s', $status['last_activity'] ) : __( 'Never', 'torob-variable-exporter' ),
+				'status_label'   => $status['running'] ? __( 'در حال پردازش', 'torob-variable-exporter' ) : __( 'آماده', 'torob-variable-exporter' ),
+				'last_sync'      => $status['last'] ? wp_date( 'Y-m-d H:i', $status['last'] ) : __( 'هنوز انجام نشده', 'torob-variable-exporter' ),
+				'next_sync'      => $status['next'] ? wp_date( 'Y-m-d H:i', $status['next'] ) : __( 'فقط اجرای دستی', 'torob-variable-exporter' ),
+				'last_activity'  => $status['last_activity'] ? wp_date( 'Y-m-d H:i:s', $status['last_activity'] ) : __( 'هنوز فعالیتی ثبت نشده', 'torob-variable-exporter' ),
 				'processed'      => $status['processed'],
 				'total'          => $status['total'],
 				'exported_items' => $status['exported_items'],
@@ -307,14 +308,14 @@ class TVES_Admin_Settings {
 				'total_retries'  => $status['total_retries'],
 				'progress_label' => sprintf(
 					/* translators: 1: processed source products, 2: total source products. */
-					__( '%1$d of %2$d source products checked', 'torob-variable-exporter' ),
+					__( '%1$d محصول از مجموع %2$d محصول بررسی شده است', 'torob-variable-exporter' ),
 					$status['processed'],
 					$status['total']
 				),
 				'v3_catalog'     => $v3_stats['ready']
-					? sprintf( /* translators: %d: item count. */ __( '%d items ready', 'torob-variable-exporter' ), $v3_stats['total'] )
-					: __( 'not generated yet', 'torob-variable-exporter' ),
-				'v3_last_access' => $v3_last_access ? wp_date( 'Y-m-d H:i:s', $v3_last_access ) : __( 'Never', 'torob-variable-exporter' ),
+					? sprintf( /* translators: %d: item count. */ __( '%d آیتم آماده ارسال است', 'torob-variable-exporter' ), $v3_stats['total'] )
+					: __( 'هنوز ساخته نشده', 'torob-variable-exporter' ),
+				'v3_last_access' => $v3_last_access ? wp_date( 'Y-m-d H:i:s', $v3_last_access ) : __( 'هنوز درخواستی ثبت نشده', 'torob-variable-exporter' ),
 			)
 		);
 	}
@@ -324,7 +325,7 @@ class TVES_Admin_Settings {
 	 */
 	public function ajax_load_logs(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'torob-variable-exporter' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'شما اجازه انجام این عملیات را ندارید.', 'torob-variable-exporter' ) ), 403 );
 		}
 		check_ajax_referer( 'tves_load_logs', 'nonce' );
 
@@ -362,7 +363,7 @@ class TVES_Admin_Settings {
 	 */
 	public function ajax_clear_logs(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'torob-variable-exporter' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'شما اجازه انجام این عملیات را ندارید.', 'torob-variable-exporter' ) ), 403 );
 		}
 		check_ajax_referer( 'tves_clear_logs', 'nonce' );
 
@@ -371,7 +372,7 @@ class TVES_Admin_Settings {
 		$status   = array_key_exists( $status, $statuses ) ? $status : '';
 		$deleted  = TVES_Logger::clear_all();
 		if ( $deleted < 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Torob logs could not be cleared. Please try again.', 'torob-variable-exporter' ) ), 500 );
+			wp_send_json_error( array( 'message' => __( 'پاک‌کردن گزارش‌های ترب انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ) ), 500 );
 		}
 
 		$page       = 1;
@@ -390,7 +391,7 @@ class TVES_Admin_Settings {
 				'deleted' => $deleted,
 				'message' => sprintf(
 					/* translators: %d: number of deleted log records. */
-					__( '%d Torob log entries were deleted.', 'torob-variable-exporter' ),
+					__( '%d رویداد از گزارش‌های ترب پاک شد.', 'torob-variable-exporter' ),
 					$deleted
 				),
 			)
@@ -423,14 +424,14 @@ class TVES_Admin_Settings {
 				'logsNonce'        => wp_create_nonce( 'tves_load_logs' ),
 				'clearLogsNonce'   => wp_create_nonce( 'tves_clear_logs' ),
 				'pollInterval'     => 3000,
-				'syncLive'         => __( 'Live', 'torob-variable-exporter' ),
-				'syncReady'        => __( 'Ready', 'torob-variable-exporter' ),
-				'confirmSync'      => __( 'Start a complete Torob feed regeneration now?', 'torob-variable-exporter' ),
-				'progressError'    => __( 'Live progress is temporarily unavailable.', 'torob-variable-exporter' ),
-				'loadingLogs'      => __( 'Loading logs…', 'torob-variable-exporter' ),
-				'logsError'        => __( 'Logs could not be loaded. Please try again.', 'torob-variable-exporter' ),
-				'clearLogsError'   => __( 'Torob logs could not be cleared. Please try again.', 'torob-variable-exporter' ),
-				'confirmClearLogs' => __( 'Permanently delete all Torob logs? Download a report first if you need a backup.', 'torob-variable-exporter' ),
+				'syncLive'         => __( 'در حال پردازش', 'torob-variable-exporter' ),
+				'syncReady'        => __( 'آماده', 'torob-variable-exporter' ),
+				'confirmSync'      => __( 'بازسازی کامل کاتالوگ ترب شروع شود؟ این عملیات ممکن است چند دقیقه زمان ببرد.', 'torob-variable-exporter' ),
+				'progressError'    => __( 'نمایش زنده پیشرفت موقتاً در دسترس نیست؛ پردازش در پس‌زمینه ادامه پیدا می‌کند.', 'torob-variable-exporter' ),
+				'loadingLogs'      => __( 'در حال دریافت گزارش‌ها…', 'torob-variable-exporter' ),
+				'logsError'        => __( 'تازه‌سازی گزارش‌ها انجام نشد؛ جدول زیر آخرین اطلاعات بارگذاری‌شده است. دوباره تلاش کنید.', 'torob-variable-exporter' ),
+				'clearLogsError'   => __( 'پاک‌کردن گزارش‌های ترب انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ),
+				'confirmClearLogs' => __( 'همه گزارش‌های ترب برای همیشه پاک شوند؟ اگر به نسخه پشتیبان نیاز دارید، ابتدا فایل گزارش را دریافت کنید.', 'torob-variable-exporter' ),
 			)
 		);
 
@@ -441,7 +442,7 @@ class TVES_Admin_Settings {
 	}
 
 	public function action_links( array $links ): array {
-		array_unshift( $links, '<a href="' . esc_url( admin_url( 'admin.php?page=tves-settings' ) ) . '">' . esc_html__( 'Settings', 'torob-variable-exporter' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( admin_url( 'admin.php?page=tves-settings' ) ) . '">' . esc_html__( 'تنظیمات', 'torob-variable-exporter' ) . '</a>' );
 		return $links;
 	}
 }

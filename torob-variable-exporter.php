@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Torob Variable Product Exporter
- * Description: Exports WooCommerce simple products and individual variations through a Torob-ready REST feed.
- * Version:     2.0.0-beta.1
+ * Plugin Name: همگام‌سازی محصولات ترب برای ووکامرس
+ * Description: محصولات ساده و انتخاب‌های محصولات متغیر ووکامرس را از طریق API رسمی ترب همگام‌سازی می‌کند.
+ * Version:     2.0.0-beta.2
  * Author:      ARSHIA
  * Text Domain: torob-variable-exporter
  * Requires at least: 6.5
@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TVES_VERSION', '2.0.0-beta.1' );
+define( 'TVES_VERSION', '2.0.0-beta.2' );
 define( 'TVES_FILE', __FILE__ );
 define( 'TVES_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TVES_URL', plugin_dir_url( __FILE__ ) );
@@ -117,7 +117,7 @@ final class TVES_Plugin {
 			return;
 		}
 
-		echo '<div class="notice notice-error"><p>' . esc_html__( 'Torob Variable Product Exporter requires WooCommerce to be installed and active.', 'torob-variable-exporter' ) . '</p></div>';
+		echo '<div class="notice notice-error"><p>' . esc_html__( 'برای استفاده از افزونه همگام‌سازی ترب، ووکامرس باید نصب و فعال باشد.', 'torob-variable-exporter' ) . '</p></div>';
 	}
 }
 

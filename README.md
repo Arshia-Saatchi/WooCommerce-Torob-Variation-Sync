@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.1<br>
+**نسخه:** 2.0.0-beta.2<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -214,6 +214,16 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.2
+
+- فارسی‌سازی کامل صفحات تنظیمات و گزارش‌های ترب با متن‌های ساده و قابل‌فهم برای مدیر فروشگاه
+- افزودن راهنمای عملی زیر گزینه‌های فنی، عنوان محصولات متغیر، ویژگی‌ها، زمان‌بندی و محدوده حذف از ترب
+- فارسی‌سازی عنوان افزونه و منوهای ووکامرس
+- نمایش فارسی پیام‌های رایج لاگ‌های قدیمی و جدید، بدون تغییر متن فنی ذخیره‌شده در پایگاه‌داده
+- فارسی‌سازی ستون‌ها و محتوای فایل‌های گزارش CSV و TXT
+- شفاف‌سازی پیام خطای تازه‌سازی AJAX؛ هنگام خطا مشخص می‌شود جدول، آخرین اطلاعات بارگذاری‌شده را نمایش می‌دهد
+- بهبود جهت RTL برای برچسب نسخه، دکمه‌های نشانی API و نوار ابزار گزارش‌ها
 
 #### 2.0.0-beta.1
 
@@ -474,6 +484,16 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.2
+
+- Fully localized the settings and activity-log screens into clear Persian for store administrators.
+- Added practical guidance for technical options, variation titles, attributes, scheduling, and exclusion scopes.
+- Localized the plugin title and WooCommerce menu entries.
+- Added Persian presentation for common historical and new log messages while preserving stable technical text in storage.
+- Localized CSV/TXT report headers, statuses, and known messages.
+- Clarified AJAX refresh failures so administrators know that the visible table contains the last successfully loaded data.
+- Refined RTL direction for the version badge, API copy controls, and log toolbar.
 
 #### 2.0.0-beta.1
 

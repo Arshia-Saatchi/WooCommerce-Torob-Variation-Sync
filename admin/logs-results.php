@@ -18,10 +18,10 @@ $pagination_base = add_query_arg( 'paged', '%#%', $pagination_base );
 <div class="tves-table-card">
 	<div class="tves-table-scroll">
 		<table class="widefat tves-log-table">
-			<thead><tr><th class="column-date"><?php esc_html_e( 'Date', 'torob-variable-exporter' ); ?></th><th class="column-product"><?php esc_html_e( 'Product', 'torob-variable-exporter' ); ?></th><th class="column-variation"><?php esc_html_e( 'Variation ID', 'torob-variable-exporter' ); ?></th><th class="column-status"><?php esc_html_e( 'Status', 'torob-variable-exporter' ); ?></th><th class="column-message"><?php esc_html_e( 'Message', 'torob-variable-exporter' ); ?></th></tr></thead>
+			<thead><tr><th class="column-date"><?php esc_html_e( 'تاریخ و ساعت', 'torob-variable-exporter' ); ?></th><th class="column-product"><?php esc_html_e( 'محصول', 'torob-variable-exporter' ); ?></th><th class="column-variation"><?php esc_html_e( 'شناسه انتخاب', 'torob-variable-exporter' ); ?></th><th class="column-status"><?php esc_html_e( 'وضعیت', 'torob-variable-exporter' ); ?></th><th class="column-message"><?php esc_html_e( 'شرح رویداد', 'torob-variable-exporter' ); ?></th></tr></thead>
 			<tbody>
 			<?php if ( ! $log_result['items'] ) : ?>
-				<tr><td colspan="5" class="tves-empty-state"><strong><?php esc_html_e( 'No matching logs', 'torob-variable-exporter' ); ?></strong><span><?php esc_html_e( 'Try another status filter or run a feed synchronization.', 'torob-variable-exporter' ); ?></span></td></tr>
+				<tr><td colspan="5" class="tves-empty-state"><strong><?php esc_html_e( 'گزارشی با این وضعیت پیدا نشد', 'torob-variable-exporter' ); ?></strong><span><?php esc_html_e( 'فیلتر دیگری انتخاب کنید یا یک‌بار کاتالوگ ترب را بازسازی کنید.', 'torob-variable-exporter' ); ?></span></td></tr>
 			<?php else : foreach ( $log_result['items'] as $log ) :
 				$product      = $log->product_id ? wc_get_product( (int) $log->product_id ) : false;
 				$product_name = $product ? $product->get_name() : ( $log->product_id ? '#' . $log->product_id : '—' );
@@ -34,7 +34,7 @@ $pagination_base = add_query_arg( 'paged', '%#%', $pagination_base );
 					<td class="column-product"><?php if ( $edit_link ) : ?><a href="<?php echo esc_url( $edit_link ); ?>"><?php echo esc_html( $product_name ); ?></a><?php else : echo esc_html( $product_name ); endif; ?></td>
 					<td class="column-variation"><?php echo $log->variation_id ? esc_html( (string) $log->variation_id ) : '—'; ?></td>
 					<td class="column-status"><span class="tves-status tves-status-<?php echo esc_attr( $log->status ); ?>"><?php echo esc_html( $statuses[ $log->status ] ?? $log->status ); ?></span></td>
-					<td class="column-message"><span class="tves-log-message"><?php echo esc_html( $log->message ); ?></span><?php if ( $context_json ) : ?><details class="tves-log-context"><summary><?php esc_html_e( 'Technical details', 'torob-variable-exporter' ); ?></summary><pre><?php echo esc_html( $context_json ); ?></pre></details><?php endif; ?></td>
+					<td class="column-message"><span class="tves-log-message"><?php echo esc_html( TVES_Logger::display_message( (string) $log->message ) ); ?></span><?php if ( $context_json ) : ?><details class="tves-log-context"><summary><?php esc_html_e( 'جزئیات فنی', 'torob-variable-exporter' ); ?></summary><pre><?php echo esc_html( $context_json ); ?></pre></details><?php endif; ?></td>
 				</tr>
 			<?php endforeach; endif; ?>
 			</tbody>

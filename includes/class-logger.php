@@ -136,6 +136,41 @@ class TVES_Logger {
 	}
 
 	/**
+	 * Return a Persian admin-facing version of known log messages.
+	 *
+	 * Log records remain stored with their stable technical text so integrations and
+	 * diagnostics are not affected. Unknown exception messages are returned unchanged.
+	 */
+	public static function display_message( string $message ): string {
+		$messages = array(
+			'Torob Product API v3 request completed.' => 'درخواست API نسخه ۳ ترب با موفقیت پاسخ داده شد.',
+			'Torob Product API v3 lookup completed with products missing from the active catalog.' => 'درخواست ترب پاسخ داده شد، اما یک یا چند محصول در کاتالوگ فعال پیدا نشد.',
+			'The Torob API token is expired or not active yet.' => 'توکن امنیتی ترب منقضی شده یا زمان فعال‌شدن آن هنوز نرسیده است.',
+			'The Torob API token audience does not match this shop host.' => 'دامنه ثبت‌شده در توکن ترب با دامنه این فروشگاه مطابقت ندارد.',
+			'The Torob API token is invalid.' => 'توکن امنیتی ارسال‌شده از ترب معتبر نیست.',
+			'The PHP Sodium extension is required to validate Torob API tokens.' => 'برای اعتبارسنجی توکن ترب، افزونه PHP Sodium باید روی سرور فعال باشد.',
+			'Feed synchronization started.' => 'بازسازی کاتالوگ ترب شروع شد.',
+			'Feed synchronization completed.' => 'بازسازی کاتالوگ ترب با موفقیت کامل شد.',
+			'Simple product synchronized.' => 'محصول ساده به کاتالوگ ترب اضافه شد.',
+			'Variation synchronized.' => 'این انتخاب از محصول متغیر به کاتالوگ ترب اضافه شد.',
+			'Product exported as unavailable because it has no price.' => 'این محصول قیمت ندارد و به‌صورت ناموجود برای ترب ارسال شد.',
+			'Variation exported as unavailable because it has no price.' => 'این انتخاب قیمت ندارد و به‌صورت ناموجود برای ترب ارسال شد.',
+			'Product skipped because it has no price.' => 'این محصول به‌دلیل نداشتن قیمت از خروجی کنار گذاشته شد.',
+			'Variation skipped because it has no price.' => 'این انتخاب به‌دلیل نداشتن قیمت از خروجی کنار گذاشته شد.',
+			'Product has stock management enabled but no stock quantity.' => 'مدیریت موجودی محصول فعال است، اما تعداد موجودی برای آن ثبت نشده است.',
+			'Variation has stock management enabled but no stock quantity.' => 'مدیریت موجودی این انتخاب فعال است، اما تعداد موجودی برای آن ثبت نشده است.',
+			'A variation ID did not resolve to a valid WooCommerce variation.' => 'شناسه یکی از انتخاب‌های محصول به یک انتخاب معتبر ووکامرس مربوط نیست.',
+			'A synchronized item could not be mapped to the Torob API v3 schema.' => 'اطلاعات یکی از محصولات با ساختار موردنیاز API نسخه ۳ ترب سازگار نبود.',
+			'A Torob API v3 catalog item could not be saved to the database.' => 'ذخیره یکی از محصولات کاتالوگ ترب در پایگاه‌داده انجام نشد.',
+			'The next synchronization batch could not be scheduled. The watchdog will retry it automatically.' => 'زمان‌بندی بخش بعدی پردازش انجام نشد؛ افزونه به‌صورت خودکار دوباره تلاش می‌کند.',
+			'A stalled feed synchronization was detected and automatically resumed.' => 'توقف پردازش تشخیص داده شد و افزونه آن را به‌صورت خودکار ادامه داد.',
+			'A synchronization batch failed and was scheduled for an automatic retry.' => 'پردازش این بخش ناموفق بود و برای تلاش مجدد خودکار زمان‌بندی شد.',
+		);
+
+		return $messages[ $message ] ?? $message;
+	}
+
+	/**
 	 * Remove old logs while retaining recent diagnostics.
 	 */
 	public static function prune( int $days = 30 ): void {
