@@ -465,6 +465,10 @@ class TVES_Admin_Settings {
 	}
 
 	public function enqueue_assets( string $hook_suffix ): void {
+		wp_add_inline_style(
+			'common',
+			'#toplevel_page_tves-settings .wp-menu-image img{background:#fff;border-radius:5px;box-sizing:border-box;height:20px!important;margin-top:6px;object-fit:contain;opacity:1;padding:2px!important;width:20px!important}'
+		);
 		if ( ! in_array( $hook_suffix, array( 'toplevel_page_tves-settings', 'admin_page_tves-logs' ), true ) ) {
 			return;
 		}
