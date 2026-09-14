@@ -69,6 +69,53 @@
 		} );
 	}
 
+	function renderSelectedExclusions( select ) {
+		var $select = $( select );
+		var selectId = String( $select.attr( 'id' ) || '' );
+		var $panel = $( '.tves-selected-exclusions[data-select-id="' + selectId + '"]' );
+		var items = [];
+		var $tbody;
+
+		if ( ! selectId || ! $panel.length ) {
+			return;
+		}
+
+		$select.find( 'option:selected' ).each( function () {
+			items.push( {
+				id: String( this.value ),
+				name: String( $( this ).text() || '' ).trim()
+			} );
+		} );
+
+		$tbody = $panel.find( 'tbody' ).empty();
+		$.each( items, function ( index, item ) {
+			var $row = $( '<tr>' ).attr( 'data-value', item.id );
+			var removeText = String( tvesAdmin.removeExclusion || 'حذف' );
+
+			$( '<td>' ).text( item.name ).appendTo( $row );
+			$( '<td>' ).addClass( 'tves-exclusion-id' ).attr( 'dir', 'ltr' ).text( '#' + item.id ).appendTo( $row );
+			$( '<td>' ).addClass( 'tves-exclusion-actions' ).append(
+				$( '<button>' ).attr( {
+					type: 'button',
+					'class': 'button-link-delete tves-remove-exclusion',
+					'data-value': item.id,
+					'aria-label': removeText + ' ' + item.name
+				} ).text( removeText )
+			).appendTo( $row );
+			$tbody.append( $row );
+		} );
+
+		$panel.prop( 'hidden', 0 === items.length );
+		$panel.find( '[data-exclusion-count]' ).text( Number( items.length ).toLocaleString() );
+		$select.next( '.select2' ).find( '.select2-search__field' ).attr( 'placeholder', String( $select.data( 'placeholder' ) || '' ) );
+	}
+
+	function initializeExclusionTables() {
+		$( '.tves-exclusion-control select.wc-product-search' ).each( function () {
+			renderSelectedExclusions( this );
+		} );
+	}
+
 	function dashboardUrl( tab ) {
 		var url = new window.URL( window.location.href );
 		url.searchParams.set( 'page', 'tves-settings' );
@@ -87,7 +134,11 @@
 	function initializeTab( tab ) {
 		toggleTemplate();
 		if ( 'overview' === tab ) { pollSyncStatus(); } else { window.clearTimeout( syncTimer ); }
-		if ( 'exclusions' === tab ) { $( document.body ).trigger( 'wc-enhanced-select-init' ); }
+		if ( 'exclusions' === tab ) {
+			$( document.body ).trigger( 'wc-enhanced-select-init' );
+			initializeExclusionTables();
+			window.setTimeout( initializeExclusionTables, 50 );
+		}
 	}
 
 	function loadDashboardTab( tab, options ) {
@@ -170,6 +221,14 @@
 		$( document ).on( 'change', '#tves-title-format', toggleTemplate );
 		$( document ).on( 'click', '.tves-copy-button', function () { copyEndpoint( this ); } );
 		$( document ).on( 'input', '#tves-category-search', function () { filterCategories( this.value ); } );
+		$( document ).on( 'change', '.tves-exclusion-control select.wc-product-search', function () { renderSelectedExclusions( this ); } );
+		$( document ).on( 'click', '.tves-remove-exclusion', function () {
+			var $panel = $( this ).closest( '.tves-selected-exclusions' );
+			var $select = $( '#' + String( $panel.data( 'select-id' ) || '' ) );
+			var value = String( $( this ).data( 'value' ) || '' );
+			$select.find( 'option' ).filter( function () { return String( this.value ) === value; } ).prop( 'selected', false );
+			$select.trigger( 'change' );
+		} );
 		$( document ).on( 'submit', '.tves-manual-sync', function () { return window.confirm( tvesAdmin.confirmSync ); } );
 		$( document ).on( 'click', '.tves-log-stat', function ( event ) { event.preventDefault(); loadLogs( String( $( this ).data( 'status' ) || '' ), 1, { history: true } ); } );
 		$( document ).on( 'submit', '.tves-log-filter', function ( event ) { event.preventDefault(); loadLogs( String( $( '#tves-status-filter' ).val() || '' ), 1, { history: true } ); } );

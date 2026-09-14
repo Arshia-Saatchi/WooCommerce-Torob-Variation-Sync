@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.8<br>
+**نسخه:** 2.0.0-beta.9<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -218,6 +218,13 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.9
+
+- بازگرداندن رنگ سبز، نارنجی و قرمز نقطه‌های وضعیت گزارش با اصلاح اولویت قوانین CSS
+- انتقال محصولات و انتخاب‌های حذف‌شده از داخل کادر جست‌وجو به جدول‌های خوانا و جمع‌وجور
+- نمایش آنی تعداد انتخاب‌ها و امکان حذف هر ردیف بدون بارگذاری مجدد صفحه
+- حفظ کامل سازوکار ذخیره تنظیمات و افزودن تست بازگشت برای رابط حذف‌ها و رنگ وضعیت‌ها
 
 #### 2.0.0-beta.8
 
@@ -529,6 +536,13 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.9
+
+- Restores the green, orange, and red log-status dots by correcting CSS specificity.
+- Moves excluded products and variations out of the search control into compact, readable tables.
+- Updates selected counts instantly and lets administrators remove rows without reloading the page.
+- Preserves the existing settings workflow and adds regression coverage for exclusion tables and status colors.
 
 #### 2.0.0-beta.8
 

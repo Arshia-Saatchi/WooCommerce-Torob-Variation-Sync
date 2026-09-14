@@ -12,6 +12,12 @@ if ( false === strpos( $view, 'tves-log-stat-label' ) ) {
 if ( false === strpos( $css, '.tves-log-stat-label' ) || false === strpos( $css, 'min-height: 104px' ) ) {
 	$failures[] = 'Compact log summary sizing or label-row styling is missing.';
 }
+foreach ( array( 'success', 'warning', 'error' ) as $status ) {
+	$selector = '.tves-log-breakdown .tves-log-stat-' . $status . ' .tves-log-stat-label i';
+	if ( false === strpos( $css, $selector ) ) {
+		$failures[] = sprintf( 'The %s dot color is not protected from the generic dot rule.', $status );
+	}
+}
 
 if ( $failures ) {
 	fwrite( STDERR, implode( PHP_EOL, $failures ) . PHP_EOL );

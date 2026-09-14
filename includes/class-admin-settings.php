@@ -492,6 +492,7 @@ class TVES_Admin_Settings {
 				'logsError'        => __( 'تازه‌سازی گزارش‌ها انجام نشد؛ جدول زیر آخرین اطلاعات بارگذاری‌شده است. دوباره تلاش کنید.', 'torob-variable-exporter' ),
 				'clearLogsError'   => __( 'پاک‌کردن گزارش‌های ترب انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ),
 				'confirmClearLogs' => __( 'همه گزارش‌های ترب برای همیشه پاک شوند؟ اگر به نسخه پشتیبان نیاز دارید، ابتدا فایل گزارش را دریافت کنید.', 'torob-variable-exporter' ),
+				'removeExclusion'  => __( 'حذف', 'torob-variable-exporter' ),
 				'loadingTab'       => __( 'در حال آماده‌سازی این بخش…', 'torob-variable-exporter' ),
 				'tabError'         => __( 'بارگذاری این بخش انجام نشد. دوباره تلاش کنید.', 'torob-variable-exporter' ),
 			)

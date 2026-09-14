@@ -138,6 +138,27 @@
 .tves-control > select:not(.wc-product-search), .tves-control > input.regular-text, .tves-advanced-field input.regular-text { border-color: #cbd5e3; border-radius: 8px; min-height: 42px; width: min(100%, 620px); }
 .tves-panel .select2-container { max-width: 780px !important; width: 100% !important; }
 .tves-panel .select2-selection { border-color: #cbd5e3 !important; border-radius: 8px !important; min-height: 44px !important; }
+.js .tves-exclusion-control .select2-selection__choice { display: none !important; }
+.tves-exclusion-control .select2-selection--multiple .select2-selection__rendered { display: block; padding: 0 10px !important; }
+.tves-exclusion-control .select2-search--inline { display: block; float: none !important; width: 100%; }
+.tves-exclusion-control .select2-search--inline .select2-search__field { box-sizing: border-box; margin: 0 !important; min-height: 42px; padding: 8px 2px !important; width: 100% !important; }
+.tves-selected-exclusions { border: 1px solid var(--tves-line); border-radius: 10px; margin-top: 12px; max-width: 780px; overflow: hidden; }
+.tves-selected-exclusions[hidden] { display: none; }
+.tves-selected-exclusions-head { align-items: center; background: #f7f9fc; border-bottom: 1px solid var(--tves-line); display: flex; justify-content: space-between; padding: 10px 13px; }
+.tves-selected-exclusions-head strong { color: var(--tves-ink-soft); font-size: 12px; }
+.tves-selected-exclusions-head span { color: var(--tves-muted); font-size: 11px; }
+.tves-selected-exclusions-head b { color: var(--tves-blue); font-size: 12px; }
+.tves-selected-exclusions-table-wrap { overflow-x: auto; }
+.tves-selected-exclusions-table { border-collapse: collapse; min-width: 520px; table-layout: fixed; width: 100%; }
+.tves-selected-exclusions-table th, .tves-selected-exclusions-table td { border-bottom: 1px solid #edf0f5; padding: 10px 13px; text-align: start; vertical-align: middle; }
+.tves-selected-exclusions-table th { background: #fff; color: var(--tves-muted); font-size: 10px; font-weight: 700; }
+.tves-selected-exclusions-table td { color: var(--tves-ink-soft); font-size: 12px; line-height: 1.6; }
+.tves-selected-exclusions-table tbody tr:last-child td { border-bottom: 0; }
+.tves-selected-exclusions-table tbody tr:hover { background: #fbfcff; }
+.tves-selected-exclusions-table .tves-exclusion-id { color: var(--tves-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; width: 110px; }
+.tves-selected-exclusions-table .tves-exclusion-actions { text-align: end; width: 72px; }
+.tves-remove-exclusion { color: var(--tves-danger) !important; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; text-decoration: none; }
+.tves-remove-exclusion:hover, .tves-remove-exclusion:focus { color: #912b38 !important; text-decoration: underline; }
 
 .tves-field-toggle { align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
 .tves-field-toggle > div:first-child > strong { padding: 0; }
@@ -211,9 +232,9 @@
 .tves-log-breakdown .tves-log-stat-label i { align-self: auto; background: #9aa4b6; border-radius: 50%; flex: 0 0 7px; height: 7px; width: 7px; }
 .tves-log-breakdown .tves-log-stat-label > span { color: var(--tves-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tves-log-breakdown strong { direction: ltr; font-size: 24px; line-height: 1; text-align: start; width: 100%; }
-.tves-log-stat-success i { background: var(--tves-success); }
-.tves-log-stat-warning i { background: var(--tves-warning); }
-.tves-log-stat-error i { background: var(--tves-danger); }
+.tves-log-breakdown .tves-log-stat-success .tves-log-stat-label i { background: var(--tves-success); }
+.tves-log-breakdown .tves-log-stat-warning .tves-log-stat-label i { background: var(--tves-warning); }
+.tves-log-breakdown .tves-log-stat-error .tves-log-stat-label i { background: var(--tves-danger); }
 .tves-log-stat-success strong { color: var(--tves-success); }
 .tves-log-stat-warning strong { color: var(--tves-warning); }
 .tves-log-stat-error strong { color: var(--tves-danger); }
