@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.4<br>
+**نسخه:** 2.0.0-beta.5<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -218,6 +218,12 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.5
+
+- اتصال مستقیم آیکن مربع رسا به منوی اصلی افزونه در نوار مدیریت وردپرس
+- افزودن تست بازگشت برای اطمینان از وجود و اتصال لوگوی افقی، آیکن مربع و نشان هدر داشبورد
+- حفظ نمایش لوگوی رسمی رسا در هدر داشبورد
 
 #### 2.0.0-beta.4
 
@@ -504,6 +510,12 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.5
+
+- Connects the square RESA icon directly to the top-level WordPress admin menu.
+- Adds a regression test covering the horizontal logo, square icon, dashboard header, and menu wiring.
+- Keeps the official RESA identity in the unified dashboard header.
 
 #### 2.0.0-beta.4
 

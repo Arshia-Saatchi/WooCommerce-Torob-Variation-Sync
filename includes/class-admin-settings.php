@@ -106,7 +106,7 @@ class TVES_Admin_Settings {
 			'manage_woocommerce',
 			'tves-settings',
 			array( $this, 'render_settings_page' ),
-			'dashicons-randomize',
+			TVES_URL . 'assets/images/resa-icon.png',
 			58
 		);
 
