@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.9<br>
+**نسخه:** 2.0.0-beta.10<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -218,6 +218,12 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.10
+
+- بازطراحی دکمه حذف ردیف‌های کنارگذاشته‌شده با آیکن سطل و ظاهر هماهنگ با هویت بصری رسا
+- افزودن حالت‌های واضح Hover، Focus و Reduced Motion برای تعامل بهتر و دسترس‌پذیرتر
+- به‌روزرسانی تست رابط حذف‌ها برای جلوگیری از بازگشت دکمه پیش‌فرض و قدیمی وردپرس
 
 #### 2.0.0-beta.9
 
@@ -536,6 +542,12 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.10
+
+- Redesigns exclusion-row removal as a compact icon-and-label action aligned with RESA's visual language.
+- Adds clear hover, focus, and reduced-motion states for better interaction and accessibility.
+- Extends exclusion UI regression coverage to prevent the legacy WordPress link-button treatment from returning.
 
 #### 2.0.0-beta.9
 

@@ -91,17 +91,19 @@
 		$.each( items, function ( index, item ) {
 			var $row = $( '<tr>' ).attr( 'data-value', item.id );
 			var removeText = String( tvesAdmin.removeExclusion || 'حذف' );
+			var $removeButton = $( '<button>' ).attr( {
+				type: 'button',
+				'class': 'tves-remove-exclusion',
+				'data-value': item.id,
+				'aria-label': removeText + ' ' + item.name
+			} );
+
+			$removeButton.append( $( '<span>' ).addClass( 'dashicons dashicons-trash' ).attr( 'aria-hidden', 'true' ) );
+			$removeButton.append( $( '<span>' ).addClass( 'tves-remove-exclusion-label' ).text( removeText ) );
 
 			$( '<td>' ).text( item.name ).appendTo( $row );
 			$( '<td>' ).addClass( 'tves-exclusion-id' ).attr( 'dir', 'ltr' ).text( '#' + item.id ).appendTo( $row );
-			$( '<td>' ).addClass( 'tves-exclusion-actions' ).append(
-				$( '<button>' ).attr( {
-					type: 'button',
-					'class': 'button-link-delete tves-remove-exclusion',
-					'data-value': item.id,
-					'aria-label': removeText + ' ' + item.name
-				} ).text( removeText )
-			).appendTo( $row );
+			$( '<td>' ).addClass( 'tves-exclusion-actions' ).append( $removeButton ).appendTo( $row );
 			$tbody.append( $row );
 		} );
 

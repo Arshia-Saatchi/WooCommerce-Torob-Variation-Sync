@@ -21,6 +21,18 @@ if ( false === strpos( $css, '.tves-selected-exclusions-table' ) || false === st
 	$failures[] = 'Exclusion tables are not styled or Select2 chips are still visible.';
 }
 
+if ( false !== strpos( $view, 'button-link-delete tves-remove-exclusion' ) || false === strpos( $view, 'dashicons-trash' ) ) {
+	$failures[] = 'The server-rendered remove action still uses the legacy WordPress link-button treatment.';
+}
+
+if ( false === strpos( $js, 'tves-remove-exclusion-label' ) || false === strpos( $js, 'dashicons-trash' ) ) {
+	$failures[] = 'Dynamically rendered remove actions do not include the modern icon-and-label structure.';
+}
+
+if ( false === strpos( $css, '.tves-remove-exclusion {' ) || false === strpos( $css, 'display: inline-flex' ) || false === strpos( $css, 'background: #fff1f3' ) ) {
+	$failures[] = 'The modern remove-action visual treatment is missing.';
+}
+
 if ( $failures ) {
 	fwrite( STDERR, implode( PHP_EOL, $failures ) . PHP_EOL );
 	exit( 1 );

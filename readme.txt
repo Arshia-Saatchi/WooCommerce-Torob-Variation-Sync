@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.9
+Stable tag: 2.0.0-beta.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.10 =
+* Redesigns exclusion-row removal as a modern icon-and-label action.
+* Adds hover, focus, and reduced-motion states consistent with the RESA interface.
+* Extends regression coverage for the updated removal control.
 
 = 2.0.0-beta.9 =
 * Restores the correct colors for all log-status dots.

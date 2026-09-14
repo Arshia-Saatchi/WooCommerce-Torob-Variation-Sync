@@ -156,9 +156,11 @@
 .tves-selected-exclusions-table tbody tr:last-child td { border-bottom: 0; }
 .tves-selected-exclusions-table tbody tr:hover { background: #fbfcff; }
 .tves-selected-exclusions-table .tves-exclusion-id { color: var(--tves-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; width: 110px; }
-.tves-selected-exclusions-table .tves-exclusion-actions { text-align: end; width: 72px; }
-.tves-remove-exclusion { color: var(--tves-danger) !important; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; text-decoration: none; }
-.tves-remove-exclusion:hover, .tves-remove-exclusion:focus { color: #912b38 !important; text-decoration: underline; }
+.tves-selected-exclusions-table .tves-exclusion-actions { text-align: end; width: 94px; }
+.tves-remove-exclusion { align-items: center; appearance: none; background: #fff1f3; border: 1px solid #f0c6cc; border-radius: 7px; color: var(--tves-danger); cursor: pointer; display: inline-flex; font-family: inherit; font-size: 11px; font-weight: 750; gap: 5px; justify-content: center; line-height: 1; min-height: 32px; min-width: 68px; padding: 6px 9px; transition: background-color .16s ease, border-color .16s ease, color .16s ease; }
+.tves-remove-exclusion .dashicons { font-size: 15px; height: 15px; line-height: 15px; width: 15px; }
+.tves-remove-exclusion:hover { background: var(--tves-danger); border-color: var(--tves-danger); color: #fff; }
+.tves-remove-exclusion:focus { border-color: var(--tves-danger); color: #912b38; }
 
 .tves-field-toggle { align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
 .tves-field-toggle > div:first-child > strong { padding: 0; }
@@ -313,7 +315,7 @@
 @keyframes tves-bars { to { height: 25px; } }
 
 @media (prefers-reduced-motion: reduce) {
-	.tves-progress span, .tves-switch > span, .tves-switch > span::after { transition: none; }
+	.tves-progress span, .tves-switch > span, .tves-switch > span::after, .tves-remove-exclusion { transition: none; }
 	.tves-refresh-logs.is-loading .dashicons, .tves-loader i, .tves-signal.is-running .tves-signal-dot, .tves-sync-monitor[data-running="1"] .tves-live-indicator i { animation: none; }
 }
 

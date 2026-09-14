@@ -66,7 +66,7 @@ foreach ( $excluded_variations as $variation_id ) {
 										<tr data-value="<?php echo esc_attr( $item['id'] ); ?>">
 											<td><?php echo esc_html( $item['name'] ); ?></td>
 											<td class="tves-exclusion-id" dir="ltr">#<?php echo esc_html( $item['id'] ); ?></td>
-											<td class="tves-exclusion-actions"><button type="button" class="button-link-delete tves-remove-exclusion" data-value="<?php echo esc_attr( $item['id'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: product name. */ __( 'حذف %s از فهرست', 'torob-variable-exporter' ), $item['name'] ) ); ?>"><?php esc_html_e( 'حذف', 'torob-variable-exporter' ); ?></button></td>
+											<td class="tves-exclusion-actions"><button type="button" class="tves-remove-exclusion" data-value="<?php echo esc_attr( $item['id'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: product name. */ __( 'حذف %s از فهرست', 'torob-variable-exporter' ), $item['name'] ) ); ?>"><span class="dashicons dashicons-trash" aria-hidden="true"></span><span class="tves-remove-exclusion-label"><?php esc_html_e( 'حذف', 'torob-variable-exporter' ); ?></span></button></td>
 										</tr>
 									<?php endforeach; ?>
 								</tbody>
@@ -97,7 +97,7 @@ foreach ( $excluded_variations as $variation_id ) {
 										<tr data-value="<?php echo esc_attr( $item['id'] ); ?>">
 											<td><?php echo esc_html( $item['name'] ); ?></td>
 											<td class="tves-exclusion-id" dir="ltr">#<?php echo esc_html( $item['id'] ); ?></td>
-											<td class="tves-exclusion-actions"><button type="button" class="button-link-delete tves-remove-exclusion" data-value="<?php echo esc_attr( $item['id'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: variation name. */ __( 'حذف %s از فهرست', 'torob-variable-exporter' ), $item['name'] ) ); ?>"><?php esc_html_e( 'حذف', 'torob-variable-exporter' ); ?></button></td>
+											<td class="tves-exclusion-actions"><button type="button" class="tves-remove-exclusion" data-value="<?php echo esc_attr( $item['id'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: variation name. */ __( 'حذف %s از فهرست', 'torob-variable-exporter' ), $item['name'] ) ); ?>"><span class="dashicons dashicons-trash" aria-hidden="true"></span><span class="tves-remove-exclusion-label"><?php esc_html_e( 'حذف', 'torob-variable-exporter' ); ?></span></button></td>
 										</tr>
 									<?php endforeach; ?>
 								</tbody>
