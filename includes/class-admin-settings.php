@@ -312,7 +312,7 @@ class TVES_Admin_Settings {
 					$status['total']
 				),
 				'v3_catalog'     => $v3_stats['ready']
-					? sprintf( /* translators: %d: item count. */ __( 'ready — %d items', 'torob-variable-exporter' ), $v3_stats['total'] )
+					? sprintf( /* translators: %d: item count. */ __( '%d items ready', 'torob-variable-exporter' ), $v3_stats['total'] )
 					: __( 'not generated yet', 'torob-variable-exporter' ),
 				'v3_last_access' => $v3_last_access ? wp_date( 'Y-m-d H:i:s', $v3_last_access ) : __( 'Never', 'torob-variable-exporter' ),
 			)
@@ -423,6 +423,8 @@ class TVES_Admin_Settings {
 				'logsNonce'        => wp_create_nonce( 'tves_load_logs' ),
 				'clearLogsNonce'   => wp_create_nonce( 'tves_clear_logs' ),
 				'pollInterval'     => 3000,
+				'syncLive'         => __( 'Live', 'torob-variable-exporter' ),
+				'syncReady'        => __( 'Ready', 'torob-variable-exporter' ),
 				'confirmSync'      => __( 'Start a complete Torob feed regeneration now?', 'torob-variable-exporter' ),
 				'progressError'    => __( 'Live progress is temporarily unavailable.', 'torob-variable-exporter' ),
 				'loadingLogs'      => __( 'Loading logs…', 'torob-variable-exporter' ),

@@ -26,7 +26,9 @@
 
 			var data = response.data;
 			$card.attr( 'data-running', data.running ? '1' : '0' );
+			$( '#tves-sync-signal' ).toggleClass( 'is-running', Boolean( data.running ) ).toggleClass( 'is-ready', ! data.running );
 			$( '#tves-sync-status' ).text( data.status_label );
+			$( '#tves-live-label' ).text( data.running ? tvesAdmin.syncLive : tvesAdmin.syncReady );
 			$( '#tves-last-sync' ).text( data.last_sync );
 			$( '#tves-next-sync' ).text( data.next_sync );
 			$( '#tves-last-activity' ).text( data.last_activity );
@@ -46,6 +48,59 @@
 	}
 
 	var logRequest = null;
+
+	function copyEndpoint( button ) {
+		var $button = $( button );
+		var target = document.getElementById( String( $button.data( 'copy-target' ) || '' ) );
+		var text = target ? target.textContent.trim() : '';
+		var $label = $button.find( 'span' ).last();
+		var original = String( $button.data( 'label' ) || $label.text() );
+		var success = String( $button.data( 'success' ) || original );
+		if ( ! text || ! window.navigator.clipboard ) {
+			return;
+		}
+
+		window.navigator.clipboard.writeText( text ).then( function () {
+			$button.addClass( 'is-copied' );
+			$label.text( success );
+			window.setTimeout( function () {
+				$button.removeClass( 'is-copied' );
+				$label.text( original );
+			}, 1600 );
+		} );
+	}
+
+	function filterCategories( value ) {
+		var query = String( value || '' ).toLocaleLowerCase();
+		$( '.tves-category-list > label' ).each( function () {
+			var haystack = String( $( this ).data( 'search' ) || $( this ).text() ).toLocaleLowerCase();
+			$( this ).prop( 'hidden', Boolean( query ) && -1 === haystack.indexOf( query ) );
+		} );
+	}
+
+	function observeSettingsSections() {
+		var links = Array.prototype.slice.call( document.querySelectorAll( '.tves-section-nav a' ) );
+		if ( ! links.length || ! window.IntersectionObserver ) {
+			return;
+		}
+		var observer = new window.IntersectionObserver( function ( entries ) {
+			entries.forEach( function ( entry ) {
+				if ( ! entry.isIntersecting ) {
+					return;
+				}
+				links.forEach( function ( link ) {
+					link.classList.toggle( 'is-current', link.getAttribute( 'href' ) === '#' + entry.target.id );
+				} );
+			} );
+		}, { rootMargin: '-25% 0px -65% 0px', threshold: 0 } );
+
+		links.forEach( function ( link ) {
+			var section = document.querySelector( link.getAttribute( 'href' ) );
+			if ( section ) {
+				observer.observe( section );
+			}
+		} );
+	}
 
 	function getLogUrlState() {
 		var url = new window.URL( window.location.href );
@@ -157,6 +212,9 @@
 	$( function () {
 		toggleTemplate();
 		$( '#tves-title-format' ).on( 'change', toggleTemplate );
+		$( '.tves-copy-button' ).on( 'click', function () { copyEndpoint( this ); } );
+		$( '#tves-category-search' ).on( 'input', function () { filterCategories( this.value ); } );
+		observeSettingsSections();
 		$( '.tves-manual-sync' ).on( 'submit', function () {
 			return window.confirm( tvesAdmin.confirmSync );
 		} );

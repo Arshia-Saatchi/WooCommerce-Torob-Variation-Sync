@@ -26,13 +26,15 @@ $pagination_base = add_query_arg( 'paged', '%#%', $pagination_base );
 				$product      = $log->product_id ? wc_get_product( (int) $log->product_id ) : false;
 				$product_name = $product ? $product->get_name() : ( $log->product_id ? '#' . $log->product_id : '—' );
 				$edit_link    = $product ? get_edit_post_link( $product->get_id() ) : '';
+				$context      = json_decode( (string) $log->context, true );
+				$context_json = is_array( $context ) && $context ? wp_json_encode( $context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) : '';
 			?>
-				<tr>
+				<tr data-status="<?php echo esc_attr( $log->status ); ?>">
 					<td class="column-date"><time datetime="<?php echo esc_attr( get_date_from_gmt( $log->created_at, 'c' ) ); ?>"><?php echo esc_html( get_date_from_gmt( $log->created_at, 'Y-m-d H:i:s' ) ); ?></time></td>
 					<td class="column-product"><?php if ( $edit_link ) : ?><a href="<?php echo esc_url( $edit_link ); ?>"><?php echo esc_html( $product_name ); ?></a><?php else : echo esc_html( $product_name ); endif; ?></td>
 					<td class="column-variation"><?php echo $log->variation_id ? esc_html( (string) $log->variation_id ) : '—'; ?></td>
 					<td class="column-status"><span class="tves-status tves-status-<?php echo esc_attr( $log->status ); ?>"><?php echo esc_html( $statuses[ $log->status ] ?? $log->status ); ?></span></td>
-					<td class="column-message"><span class="tves-log-message"><?php echo esc_html( $log->message ); ?></span></td>
+					<td class="column-message"><span class="tves-log-message"><?php echo esc_html( $log->message ); ?></span><?php if ( $context_json ) : ?><details class="tves-log-context"><summary><?php esc_html_e( 'Technical details', 'torob-variable-exporter' ); ?></summary><pre><?php echo esc_html( $context_json ); ?></pre></details><?php endif; ?></td>
 				</tr>
 			<?php endforeach; endif; ?>
 			</tbody>

@@ -3,7 +3,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 1.5.1<br>
+**نسخه:** 2.0.0-beta.1<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -45,6 +45,10 @@ Torob Variable Product Exporter یک افزونه مستقل برای WordPress 
 - توکن اختیاری برای محافظت از فید
 - سازگاری با HPOS ووکامرس
 - رابط مدیریتی واکنش‌گرا و سازگار با RTL
+- رابط نسل دوم آزمایشی با مسیر وضعیت API، کاتالوگ و Sync
+- جست‌وجوی سریع دسته‌ها در Exclusions و توضیح روشن محدوده هر نوع حذف
+- نمایش بازشونده جزئیات فنی داخل هر ردیف لاگ
+- کپی سریع Endpointهای API از صفحه تنظیمات
 
 ### پیش‌نیازها
 
@@ -210,6 +214,16 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.1
+
+- طراحی مجدد کامل صفحات تنظیمات و لاگ با هویت بصری اختصاصی پنل عملیات ترب
+- اضافه‌شدن نوار وضعیت پیوسته برای API امن، کاتالوگ محصولات و همگام‌سازی
+- گروه‌بندی تنظیمات براساس خروجی محصول، محدوده Exclusions و بازسازی کاتالوگ
+- اضافه‌شدن جست‌وجوی لحظه‌ای دسته‌ها و راهنمای تفاوت حذف کل محصول، یک Variation یا دسته
+- اضافه‌شدن دکمه کپی Endpoint و نمایش جزئیات فنی بازشونده در جدول لاگ
+- بهبود دسترس‌پذیری، Focus صفحه‌کلید، حالت Reduced Motion و نمایش موبایل
+- حفظ کامل منطق API، Sync، Exclusions و اصلاحات نسخه 1.5.1
 
 #### 1.5.1
 
@@ -460,6 +474,16 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.1
+
+- Completely redesigned the settings and log screens around a distinct Torob operations-console identity.
+- Added a connected status rail for the secure API, product catalog, and synchronization.
+- Reorganized settings around product output, exclusion scope, and catalog rebuilding.
+- Added instant category filtering and clear guidance for whole-product, single-variation, and category exclusions.
+- Added endpoint copy controls and expandable technical context in each log row.
+- Improved keyboard focus, reduced-motion support, RTL behavior, and mobile layouts.
+- Preserved the API, synchronization, exclusion behavior, and all fixes from version 1.5.1.
 
 #### 1.5.1
 

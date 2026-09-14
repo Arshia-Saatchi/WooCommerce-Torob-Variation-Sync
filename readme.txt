@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.5.1
+Stable tag: 2.0.0-beta.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,9 @@ Features:
 * Confirmed AJAX log clearing, automatic 30-day cleanup, and a 20,000-record cap
 * Optional feed token, capability checks, nonces, sanitization, and escaping
 * HPOS compatibility and responsive RTL-safe administration
+* Experimental second-generation operations UI with a connected API/catalog/sync status rail
+* Instant exclusion-category filtering and clear exclusion-scope guidance
+* Expandable technical context inside log rows and one-click endpoint copying
 
 The official API is available at `/wp-json/torob/v3/products`. Send this URL to Torob support. Torob supplies the signed JWT and token-version header; the plugin validates its signature, time claims, and audience. The v1 GET feed remains as a legacy compatibility endpoint.
 
@@ -124,6 +127,15 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.1 =
+* Completely redesigns settings and logs around a Torob operations-console identity.
+* Adds a connected status rail for the secure API, catalog, and synchronization.
+* Reorganizes controls around product output, exclusion scope, and catalog rebuilding.
+* Adds instant category filtering and guidance for whole products, single variations, and categories.
+* Adds endpoint copy controls and expandable technical context in log rows.
+* Improves keyboard focus, reduced-motion support, RTL behavior, and mobile layouts.
+* Preserves all API, synchronization, exclusion behavior, and version 1.5.1 fixes.
 
 = 1.5.1 =
 * Fixes empty single-product responses for historical URLs whose internal variation ID has changed.
