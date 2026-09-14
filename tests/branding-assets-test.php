@@ -14,11 +14,11 @@ if ( ! is_file( $icon_path ) ) {
 if ( ! is_file( $logo_path ) ) {
 	$failures[] = 'Horizontal RESA logo is missing.';
 }
-if ( false === strpos( $admin, "TVES_URL . 'assets/images/resa-icon.png'" ) ) {
-	$failures[] = 'Admin menu is not wired to the RESA icon.';
+if ( false === strpos( $admin, "add_query_arg( 'ver', TVES_VERSION, TVES_URL . 'assets/images/resa-icon.png' )" ) ) {
+	$failures[] = 'Admin menu is not wired to a versioned RESA icon URL.';
 }
-if ( false === strpos( $settings, "TVES_URL . 'assets/images/resa-logo-horizontal.png'" ) ) {
-	$failures[] = 'Dashboard header is not wired to the horizontal RESA logo.';
+if ( false === strpos( $settings, "add_query_arg( 'ver', TVES_VERSION, TVES_URL . 'assets/images/resa-logo-horizontal.png' )" ) ) {
+	$failures[] = 'Dashboard header is not wired to a versioned horizontal RESA logo URL.';
 }
 if ( false === strpos( $admin, '#toplevel_page_tves-settings .wp-menu-image img' ) || false === strpos( $admin, 'width:20px!important' ) ) {
 	$failures[] = 'Admin menu icon does not have a defensive 20px size constraint.';

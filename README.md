@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.11<br>
+**نسخه:** 2.0.0-beta.12<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -218,6 +218,13 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.12
+
+- هم‌ترازکردن دقیق پایین `R` نمادین با خط مبنای حروف `ESA` بدون تغییر اندازه یا فرم نشان
+- افزودن نسخه افزونه به نشانی آیکن منوی وردپرس برای جلوگیری قطعی از نمایش فایل قدیمی مرورگر
+- افزودن نسخه به نشانی لوگوی سربرگ تا تغییرات برند بلافاصله پس از به‌روزرسانی دیده شوند
+- به‌روزرسانی تست برند برای الزام نشانی‌های نسخه‌دار دارایی‌های تصویری
 
 #### 2.0.0-beta.11
 
@@ -549,6 +556,13 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.12
+
+- Aligns the bottom of the symbolic `R` precisely with the `ESA` baseline without changing the mark's scale or shape.
+- Versions the WordPress admin-menu icon URL to prevent browsers from retaining the previous asset.
+- Versions the dashboard wordmark URL so brand updates appear immediately after an upgrade.
+- Extends brand regression coverage to require cache-busted image URLs.
 
 #### 2.0.0-beta.11
 

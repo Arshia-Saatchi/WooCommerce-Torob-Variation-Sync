@@ -3,7 +3,7 @@ Contributors: arshia
 Tags: woocommerce, torob, variable products, product feed, marketplace
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 2.0.0-beta.11
+Stable tag: 2.0.0-beta.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Official endpoint:
 `Feed synchronization completed` means the local catalog is ready. An updated Last authenticated Torob request value and a `Torob Product API v3 request completed` log entry confirm that Torob actually contacted the API.
 
 == Changelog ==
+
+= 2.0.0-beta.12 =
+* Aligns the symbolic R precisely with the ESA baseline.
+* Adds versioned URLs to the admin-menu icon and dashboard logo to prevent stale browser caches.
+* Extends brand regression coverage for cache-busted image assets.
 
 = 2.0.0-beta.11 =
 * Removes the duplicate R from the horizontal logo to form the symbolic R plus ESA lockup.

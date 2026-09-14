@@ -106,7 +106,7 @@ class TVES_Admin_Settings {
 			'manage_woocommerce',
 			'tves-settings',
 			array( $this, 'render_settings_page' ),
-			TVES_URL . 'assets/images/resa-icon.png',
+			add_query_arg( 'ver', TVES_VERSION, TVES_URL . 'assets/images/resa-icon.png' ),
 			58
 		);
 
