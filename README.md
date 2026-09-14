@@ -5,7 +5,7 @@
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.7<br>
+**نسخه:** 2.0.0-beta.8<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -218,6 +218,13 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.8
+
+- کاهش ارتفاع کارت‌های خلاصه گزارش از ۱۳۸ به ۱۰۴ پیکسل و فشرده‌سازی فاصله‌های داخلی
+- قرارگیری نقطه رنگی و عنوان هر وضعیت در یک ردیف ثابت و هم‌تراز
+- کاهش اندازه عدد کارت مجموع برای ایجاد تناسب بهتر در نوار پایش گزارش‌ها
+- افزودن تست بازگشت برای ساختار و اندازه خلاصه گزارش‌ها
 
 #### 2.0.0-beta.7
 
@@ -522,6 +529,13 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.8
+
+- Reduces log-summary card height from 138 to 104 pixels and tightens spacing.
+- Keeps every colored status dot and label together in one aligned row.
+- Refines the total-card number scale for a more balanced monitoring strip.
+- Adds regression coverage for the compact log-summary layout.
 
 #### 2.0.0-beta.7
 

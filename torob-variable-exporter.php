@@ -2,7 +2,7 @@
 /**
  * Plugin Name: رسا | RESA — همگام‌سازی ووکامرس با ترب
  * Description: محصولات ساده و انتخاب‌های محصولات متغیر ووکامرس را از طریق API رسمی ترب همگام‌سازی می‌کند.
- * Version:     2.0.0-beta.7
+ * Version:     2.0.0-beta.8
  * Author:      ARSHIA
  * Text Domain: torob-variable-exporter
  * Requires at least: 6.5
@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TVES_VERSION', '2.0.0-beta.7' );
+define( 'TVES_VERSION', '2.0.0-beta.8' );
 define( 'TVES_FILE', __FILE__ );
 define( 'TVES_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TVES_URL', plugin_dir_url( __FILE__ ) );
