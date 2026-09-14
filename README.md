@@ -1,9 +1,11 @@
 # رسا (RESA) — همگام‌سازی ووکامرس با ترب
 
+<p align="center"><img src="assets/images/resa-logo-horizontal.png" alt="نشان رسا — RESA" width="680"></p>
+
 افزونه مستقل ووکامرس برای تبدیل هر Variation به یک آیتم محصول مستقل، تولید فید JSON صفحه‌بندی‌شده، مدیریت همگام‌سازی و مشاهده گزارش‌ها.
 
 **نویسنده:** ARSHIA  
-**نسخه:** 2.0.0-beta.3<br>
+**نسخه:** 2.0.0-beta.4<br>
 **مجوز:** GPL-2.0-or-later
 
 ---
@@ -216,6 +218,13 @@ WooCommerce-Torob-Variation-Sync/
 5. Pull Request همراه با توضیح و روش تست ارسال کنید.
 
 ### تاریخچه نسخه‌ها
+
+#### 2.0.0-beta.4
+
+- طراحی هویت بصری اختصاصی رسا با نشان ترکیبی حرف R، چرخه همگام‌سازی و نمودار داده
+- افزودن نسخه افقی لوگو و آیکن مربع با پس‌زمینه شفاف به دارایی‌های افزونه
+- جایگزینی نشان موقت هدر داشبورد با آیکن رسمی رسا
+- افزودن لوگوی رسمی به مستندات GitHub
 
 #### 2.0.0-beta.3
 
@@ -495,6 +504,13 @@ See the project tree in the Persian section above. Runtime logs are stored in a 
 5. Open a pull request with a clear description and test instructions.
 
 ### Changelog
+
+#### 2.0.0-beta.4
+
+- Adds a dedicated RESA visual identity combining the R letterform, synchronization, and data bars.
+- Includes transparent horizontal and square logo assets.
+- Replaces the temporary dashboard mark with the official RESA icon.
+- Adds the official logo to the GitHub documentation.
 
 #### 2.0.0-beta.3
 

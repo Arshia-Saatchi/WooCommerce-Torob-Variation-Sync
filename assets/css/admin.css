@@ -45,7 +45,8 @@
 }
 
 .tves-brand-lockup { align-items: center; display: flex; gap: 17px; min-width: 0; }
-.tves-brand-mark { align-items: flex-end; background: #fff; border-radius: 12px; display: flex; flex: 0 0 52px; gap: 4px; height: 52px; justify-content: center; padding: 11px; transform: rotate(-2deg); }
+.tves-brand-mark { align-items: center; background: #fff; border-radius: 12px; display: flex; flex: 0 0 52px; height: 52px; justify-content: center; overflow: hidden; padding: 5px; transform: rotate(-2deg); }
+.tves-brand-mark img { display: block; height: 100%; object-fit: contain; width: 100%; }
 .tves-brand-mark i { background: var(--tves-blue); border-radius: 3px 3px 1px 1px; display: block; width: 7px; }
 .tves-brand-mark i:nth-child(1) { height: 15px; }
 .tves-brand-mark i:nth-child(2) { background: var(--tves-cyan); height: 29px; }
